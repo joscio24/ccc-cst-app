@@ -1,0 +1,26 @@
+{
+  "churchname": "ìjọ́ mimọ ti kristi lati ọ̀run wa",
+  "cstTag": "Igbimọ àgbà nlá fun èètò ijọ",
+    "welcomeText": "Ẹ ku abọ sí àpamọ́ CST àṣẹ́ṣẹ̀",
+    "benefit1": "Máa tẹ̀síwájú pẹ̀lú àwọn àtúnṣe ṣọ́ọ̀ṣì",
+    "youreJustGettingStarted": "Décisions - Reformes - Discussion",
+    "benefit2": "Fi  àwọn ìpèníjà ranṣẹ́ fún àwọn ọ̀gá ṣọ́ọ̀ṣì",
+    "benefit3": "Darapọ̀ mọ́ yàrá ìjíròrò agbáyé pẹ̀lú àwọn alákóso",
+    "login": "Wọlé",
+    "signup": "Forúkọsílẹ̀",
+    "guest": "Tẹ̀síwájú gẹ́gẹ́ bí alejo",
+    "noAccountSignUp": "Don't have an account? Regiter here.",
+    "home": {
+    "explore": "Ṣawari",
+    "searchPlaceholder": "Ṣàwárí nibi",
+    "seeMore": "Wo diẹ sii",
+    "tabs": {
+      "news": "Ìròyìn",
+      "announcements": "Ìkéde",
+      "reforms": "Àtúnṣe",
+      "decisions": "Ìpinnu",
+      "events": "Àwọn ìṣẹ̀lẹ̀"
+    }
+  }
+  }
+  

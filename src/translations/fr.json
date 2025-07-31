@@ -1,0 +1,25 @@
+{
+  "churchname": "Eglise du Christianisme Céleste",
+  "cstTag": "Commité Supérieur de Transition (CST)",
+  "welcomeText": "Bienvenue sur l'application officielle du CST",
+  "youreJustGettingStarted": "Décisions - Reformes - Discussion",
+  "benefit1": "Restez informé des réformes de l'église",
+  "benefit2": "Soumettez des propositions de reformes pour les dignitaires de l'église",
+  "benefit3": "Rejoignez le salon de discussion mondial avec des modérateurs",
+  "login": "Connexion",
+  "signup": "S'inscrire",
+  "guest": "Continuer en tant qu'invité",
+  "noAccountSignUp": "Don't have an account? Regiter here.",
+  "home": {
+    "explore": "Explorer",
+    "searchPlaceholder": "Rechercher ici",
+    "seeMore": "Voir plus",
+    "tabs": {
+      "news": "Actualités",
+      "announcements": "Annonces",
+      "reforms": "Réformes",
+      "decisions": "Décisions",
+      "events": "Événements"
+    }
+  }
+}

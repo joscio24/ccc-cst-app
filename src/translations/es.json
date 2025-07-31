@@ -1,0 +1,24 @@
+{
+  "churchname": "Celestial Church of Christ",
+  "cstTag": "Superior Transition Commitee",
+  "welcomeText": "Bienvenido a la aplicación oficial de CST",
+  "benefit1": "Mantente actualizado con las reformas de la iglesia",
+  "benefit2": "Envía propuestas para dignatarios de la iglesia",
+  "benefit3": "Únete al chat mundial con moderadores",
+  "login": "Iniciar sesión",
+  "signup": "Registrarse",
+  "guest": "Continuar como invitado",
+  "noAccountSignUp": "Don't have an account? Regiter here.",
+  "home": {
+    "explore": "Explorar",
+    "searchPlaceholder": "Buscar aquí",
+    "seeMore": "Ver más",
+    "tabs": {
+      "news": "Noticias",
+      "announcements": "Anuncios",
+      "reforms": "Reformas",
+      "decisions": "Decisiones",
+      "events": "Eventos"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "churchname": "Agun Sinsɛn Wéwé Klist tɔn sɔn olɔn mɛn wa",
+  "cstTag": "Commité Supérieur de Transition (CST)",
+  "welcomeText": "Wéyè ní yé CST mínsùn kpɔnɔn",
+  "benefit1": "Dà wé tó jɔnùn nɔn hùn nyɔn gbàn",
+  "youreJustGettingStarted": "Décisions - Reformes - Discussion",
+  "benefit2": "Fò nyɔn kɔ̀ mà wɛnɛ̀ gbɔ̀nɔn",
+  "benefit3": "Hùn sɔn kɔ́n gbè àzɔ sɔn hùn gbè mànyɔ gɔ",
+  "login": "Tónu",
+  "signup": "Kplɔnù",
+  "guest": "Tónu sɔn wɛ̀",
+  "noAccountSignUp": "Don't have an account? Regiter here.",
+  "home": {
+    "explore": "Zɔ nɔn",
+    "searchPlaceholder": "Wá nɔ hɛn",
+    "seeMore": "Wlɛ ɖo xwé",
+    "tabs": {
+      "news": "Hɔntɔ",
+      "announcements": "Wémè",
+      "reforms": "Tɔnkpɔn",
+      "decisions": "ɖɔxɔ",
+      "events": "Sɔsɔwɛ"
+    }
+  }
+}
