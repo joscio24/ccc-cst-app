@@ -126,7 +126,7 @@ const SplashScreen = ({ onLogin, onSignUp, onGuest }: any) => {
         <View style={styles.modalOverlay}>
           <View style={[styles.languageModal, { backgroundColor }]}>
             <Text style={[styles.languageTitle, { color: textColor }]}>
-              {t("selectLanguage")}
+              {t("settings.selectLanguage")}
             </Text>
 
             {["en", "fr", "yo", "gou", "es"].map((lng) => (

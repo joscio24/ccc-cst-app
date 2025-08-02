@@ -15,8 +15,8 @@ import {
 import { useTranslation } from "react-i18next";
 import { Colors } from "../../theme/colors";
 import { useAppTheme } from "../../ThemeContext"; 
-import Icon from "react-native-vector-icons/Ionicons";
-import { Picker } from "@react-native-picker/picker";
+import Icon from "react-native-vector-icons/Ionicons"; 
+// import { Picker } from "@react-native-picker/picker";
 import countryData from "../../data/country.json";
 
 const SignupScreen = ({ navigation }: any) => {
@@ -94,17 +94,17 @@ const SignupScreen = ({ navigation }: any) => {
                 onChangeText={setLastName}
               />
               <View style={[styles.input, { backgroundColor: inputBg }]}>
-                <Picker
+                {/* <Picker
                   selectedValue={country}
                   onValueChange={(value) => setCountry(value)}
                   style={{ color: textColor }}
-                  dropdownIconColor={textColor}
+                  dropdownIconColor={textColor} 
                 >
                   <Picker.Item label={t("selectCountry")} value="" />
                   {countryList.map((c) => (
                     <Picker.Item key={c.code} label={c.name} value={c.name} />
                   ))}
-                </Picker>
+                </Picker> */}
               </View>
               <TextInput
                 placeholder={t("parishName")}

@@ -19,6 +19,13 @@ def reactNativeAndroidDir = new File(
   }.standardOutput.asText.get().trim(),
   "../android"
 )
+ext {
+    buildToolsVersion = "35.0.0"         // change this to match what you have
+    minSdkVersion = 24                   // or 21 if you support older devices
+    compileSdkVersion = 35              // change to your installed version
+    targetSdkVersion = 35
+    ndkVersion = "27.0.12077973"         // change to your installed NDK version
+}
 
 allprojects {
   repositories {

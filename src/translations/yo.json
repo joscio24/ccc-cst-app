@@ -1,16 +1,17 @@
 {
   "churchname": "ìjọ́ mimọ ti kristi lati ọ̀run wa",
   "cstTag": "Igbimọ àgbà nlá fun èètò ijọ",
-    "welcomeText": "Ẹ ku abọ sí àpamọ́ CST àṣẹ́ṣẹ̀",
-    "benefit1": "Máa tẹ̀síwájú pẹ̀lú àwọn àtúnṣe ṣọ́ọ̀ṣì",
-    "youreJustGettingStarted": "Décisions - Reformes - Discussion",
-    "benefit2": "Fi  àwọn ìpèníjà ranṣẹ́ fún àwọn ọ̀gá ṣọ́ọ̀ṣì",
-    "benefit3": "Darapọ̀ mọ́ yàrá ìjíròrò agbáyé pẹ̀lú àwọn alákóso",
-    "login": "Wọlé",
-    "signup": "Forúkọsílẹ̀",
-    "guest": "Tẹ̀síwájú gẹ́gẹ́ bí alejo",
-    "noAccountSignUp": "Don't have an account? Regiter here.",
-    "home": {
+  "welcomeText": "Ẹ ku abọ sí àpamọ́ CST àṣẹ́ṣẹ̀",
+  "benefit1": "Máa tẹ̀síwájú pẹ̀lú àwọn àtúnṣe ṣọ́ọ̀ṣì",
+  "youreJustGettingStarted": "Décisions - Reformes - Discussion",
+  "benefit2": "Fi  àwọn ìpèníjà ranṣẹ́ fún àwọn ọ̀gá ṣọ́ọ̀ṣì",
+  "benefit3": "Darapọ̀ mọ́ yàrá ìjíròrò agbáyé pẹ̀lú àwọn alákóso",
+  "login": "Wọlé",
+  "signup": "Forúkọsílẹ̀",
+  "guest": "Tẹ̀síwájú gẹ́gẹ́ bí alejo",
+  "noAccountSignUp": "Don't have an account? Regiter here.",
+  "selectLanguage": "Yan Èdè",
+  "home": {
     "explore": "Ṣawari",
     "searchPlaceholder": "Ṣàwárí nibi",
     "seeMore": "Wo diẹ sii",
@@ -21,6 +22,66 @@
       "decisions": "Ìpinnu",
       "events": "Àwọn ìṣẹ̀lẹ̀"
     }
+  },
+  "notifications": {
+    "title": "Ìkìlọ̀",
+    "clearAll": "Pa gbogbo rẹ́",
+    "noNotifications": "Kò sí ìkìlọ̀ kankan",
+    "newMessage": "Ìránṣẹ́ tuntun wọlé",
+    "newMessageDesc": "O ní ìránṣẹ́ tuntun láti ọdọ alákóso.",
+    "updateAvailable": "Ìmúdájú tuntun wà",
+    "updateAvailableDesc": "Àpẹrẹ tuntun ti ẹ̀rọ ayélujára ti ṣètò fún fifi sori.",
+    "systemAlert": "Ìkìlọ̀ eto",
+    "systemAlertDesc": "Ìṣe àdánidáyé àìmọ̀ọ́kan wà lórí àkọọlẹ rẹ."
+  },
+  "bottomTabs": {
+    "Home": "Ilé",
+    "LeComite": "Ìgbìmọ̀",
+    "Documents": "Ìwé àṣẹ",
+    "Messages": "Ìránṣẹ́",
+    "Cantiques": "Orin"
+  },
+  "settings": {
+    "title": "Ẹ̀tọ́",
+    "language": "Èèdè",
+    "notifications": "Ìkìlọ̀",
+    "darkMode": "Ìmọ́lẹ̀ òru",
+    "privacyPolicy": "Ilana Àṣírí",
+    "aboutApp": "Nípa Ìṣàkóso",
+    "selectLanguage": "Yan Èdè"
+  },
+  "lang": {
+    "en": "Gẹ̀ẹ́sì",
+    "fr": "Faranse",
+    "yo": "Yorùbá",
+    "gou": "iFon",
+    "es": "Sipáníìṣì"
+  },
+  "common": {
+    "close": "Kúrò",
+    "cancel": "Fagilé",
+    "apply": "Beere",
+    "ok": "Ó dáa"
+  },
+  "documents": {
+    "title": "Ìwé àṣẹ"
+  },
+  "doc_10_commandments": "Àṣẹ mẹwa",
+  "doc_church_history": "Ìtàn Ṣọ́ọ̀ṣì",
+  "doc_osh_offa": "PPF SBJ OSHOFFA",
+  "doc_constitution": "Ofin ECC",
+  "doc_light_on_ecc": "Ìmólẹ̀ nípa ECC",
+  "doc_11_ordnances": "Àṣẹ mẹtàlá",
+  "doc_4_sacraments": "Àṣẹ mẹrin",
+  "doc_12_forbidden": "Ètàn mẹtala tí kò yẹ",
+  "doc_institutions": "Àjọṣepọ̀ ECC",
+  "messages": {
+    "title": "Àwọn Yara Ìjíròrò ECC",
+    "suggestedRooms": "Àwọn yara tó yẹ fún ọ",
+    "apply": "Beere",
+    "requestTitle": "Ìbéèrè láti darapọ̀",
+    "requestText": "Ṣé o fẹ́ béèrè láti darapọ̀ mọ́ \"{{name}}\"? Àwọn alábòójútó yóò ṣàyẹ̀wò àkọọlẹ rẹ kí wọ́n tó fọwọ́si.",
+    "requestSent": "Ìbéèrè ti rán ✅",
+    "confirmText": "Ìbéèrè rẹ láti darapọ̀ mọ́ \"{{name}}\" ti rán nípasẹ́ àṣeyọrí."
   }
-  }
-  
+}

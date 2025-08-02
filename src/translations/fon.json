@@ -21,5 +21,67 @@
       "decisions": "ɖɔxɔ",
       "events": "Sɔsɔwɛ"
     }
+  },
+  "notifications": {
+    "title": "Agbéjádé",
+    "clearAll": "Sùn gban",
+    "noNotifications": "Kpéɖa agbéjádé wé",
+    "newMessage": "Nú wá àdéhùn",
+    "newMessageDesc": "Wé nú wá àdéhùn wé dé gbè yì wá.",
+    "updateAvailable": "Ìgbé wá gbè dé",
+    "updateAvailableDesc": "Agbá wá gban gbè tɔn wé gbè kpé wá.",
+    "systemAlert": "Àbájá kplɔ",
+    "systemAlertDesc": "Tɔn kéké wé wé yì kplɔ dɔ̀n."
+  },
+  "bottomTabs": {
+    "Home": "Hùn",
+    "LeComite": "Kɔmitɛ",
+    "Documents": "Àgbéjádé",
+    "Messages": "Àdéhùn",
+    "Cantiques": "OHan Wɛ́lɛ̀"
+  },
+  "settings": {
+    "title": "Déhùn",
+    "language": "Sɛ̀",
+    "notifications": "Fúŋkɔn",
+    "darkMode": "Mìdɔ̀bì gùn",
+    "privacyPolicy": "Sɛ́yí nù",
+    "aboutApp": "Gbé dɔ̀ kɔn",
+    "selectLanguage": "Sè Sɛ̀"
+  },
+  "lang": {
+    "en": "Lànglisi",
+    "fr": "Fransè",
+    "yo": "Yorùbá",
+    "gou": "Fɔ̀n",
+    "es": "Espàñòl"
+  },
+  "common": {
+    "close": "Dɔ̀",
+    "cancel": "Tɔ́n na",
+    "apply": "Gbé to",
+    "ok": "Wa"
+  },
+  
+  "documents": {
+    "title": "Documents"
+  },
+  "doc_10_commandments": "10 Gbèlè Lẹ̀xó",
+  "doc_church_history": "Dòtó Ègléz",
+  "doc_osh_offa": "PPF SBJ OSHOFFA",
+  "doc_constitution": "Xwéxwé ECC",
+  "doc_light_on_ecc": "Lúmɛ́ sù ECC",
+  "doc_11_ordnances": "11 Nɔ́n",
+  "doc_4_sacraments": "4 Sàkràméntɔ̀",
+  "doc_12_forbidden": "12 Tɔ́n Mɛ Lɛ́",
+  "doc_institutions": "Zánnu ECC",
+  "messages": {
+    "title": "Zɔnnu ECC",
+    "suggestedRooms": "Zɔnnu tɔn ɖo nu ɖò nú wɛ",
+    "apply": "Gbé to",
+    "requestTitle": "Wɛ gbè ɖò nú",
+    "requestText": "È wɛ gbé ɖò nú \"{{name}}\"? Àzɔtɔ tɔn ɔ wɛ wɛ àkpata nú wɛ nyi sɔ àtɛ ló mɛ.",
+    "requestSent": "Gbè ɖò nú wɛ do wɛ ✅",
+    "confirmText": "Gbè ɖò nú wɛ ɖò \"{{name}}\" do wɛ klɛ nú wɛ nu."
   }
 }

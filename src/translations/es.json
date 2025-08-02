@@ -20,5 +20,57 @@
       "decisions": "Decisiones",
       "events": "Eventos"
     }
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "clearAll": "Borrar todo",
+    "noNotifications": "No hay notificaciones",
+    "newMessage": "Nuevo mensaje recibido",
+    "newMessageDesc": "Tienes un nuevo mensaje del administrador.",
+    "updateAvailable": "Actualización disponible",
+    "updateAvailableDesc": "Hay una nueva actualización de la aplicación lista para instalar.",
+    "systemAlert": "Alerta del sistema",
+    "systemAlertDesc": "Se ha detectado actividad inusual en tu cuenta."
+  },
+  "bottomTabs": {
+    "Home": "Inicio",
+    "LeComite": "Comité",
+    "Documents": "Documentos",
+    "Messages": "Mensajes",
+    "Cantiques": "Canciones"
+  },
+  "settings":{
+    "title":"Settings",
+    "language":"Langue d'affichage",
+    "c":"",
+    "b":"",
+    "n":""
+  },
+  "documents": {
+    "title": "Documents"
+  },
+  "doc_10_commandments": "10 Mandamientos",
+  "doc_church_history": "Historia de la Iglesia",
+  "doc_osh_offa": "PPF SBJ OSHOFFA",
+  "doc_constitution": "Constitución ECC",
+  "doc_light_on_ecc": "Luz sobre ECC",
+  "doc_11_ordnances": "11 Ordenanzas",
+  "doc_4_sacraments": "4 Sacramentos",
+  "doc_12_forbidden": "12 Actos Prohibidos",
+  "doc_institutions": "Instituciones ECC",
+  "messages": {
+    "title": "Foros ECC",
+    "suggestedRooms": "Salas sugeridas para ti",
+    "apply": "Solicitar",
+    "requestTitle": "Solicitud para unirse",
+    "requestText": "¿Deseas solicitar unirte a \"{{name}}\"? Los moderadores revisarán tu perfil antes de aprobarlo.",
+    "requestSent": "Solicitud enviada ✅",
+    "confirmText": "Tu solicitud para unirte a \"{{name}}\" ha sido enviada correctamente."
+  },
+  "common": {
+    "cancel": "Cancelar",
+    "apply": "Solicitar",
+    "ok": "Aceptar",
+    "close": "Fermer"
   }
 }

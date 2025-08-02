@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
-  Platform,
+  Keyboard,
   ViewStyle,
   TextStyle,
 } from "react-native";
@@ -13,13 +13,21 @@ import {
   BottomTabBarProps,
 } from "@react-navigation/bottom-tabs";
 import Icon from "react-native-vector-icons/Ionicons";
+import { useTranslation } from "react-i18next";
 
+import HomeScreen from "./screens/Home";
 import LeComite from "./screens/LeComite";
 import Documents from "./screens/Documents";
 import Messages from "./screens/Messages";
 import Cantiques from "./screens/Cantiques";
+import { COLORS } from "./theme/colors";
 
-type TabRouteName = "LeComite" | "Documents" | "Messages" | "Cantiques";
+type TabRouteName =
+  | "Home"
+  | "LeComite"
+  | "Documents"
+  | "Messages"
+  | "Cantiques";
 
 const Tab = createBottomTabNavigator();
 
@@ -28,12 +36,32 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({
   descriptors,
   navigation,
 }) => {
+  const { t } = useTranslation();
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const showSub = Keyboard.addListener("keyboardDidShow", () => {
+      setKeyboardVisible(true);
+    });
+    const hideSub = Keyboard.addListener("keyboardDidHide", () => {
+      setKeyboardVisible(false);
+    });
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
+
+  if (isKeyboardVisible) {
+    return null; // Hide tab bar when keyboard is open
+  }
+
   return (
-    <View style={styles.tabContainer}>
+    <View style={[styles.tabContainer]}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
-        const label = options.tabBarLabel ?? options.title ?? route.name;
-
+        // Use t() to get translated label based on route.name
+        const label = t(`bottomTabs.${route.name}`);
         const isFocused = state.index === index;
 
         const onPress = () => {
@@ -42,13 +70,13 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({
             target: route.key,
             canPreventDefault: true,
           });
-
           if (!isFocused && !event.defaultPrevented) {
             navigation.navigate(route.name);
           }
         };
 
         const icons: Record<TabRouteName, string> = {
+          Home: "home-outline",
           LeComite: "people-outline",
           Documents: "document-text-outline",
           Messages: "chatbubbles-outline",
@@ -56,36 +84,31 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({
         };
 
         const iconName = icons[route.name as TabRouteName];
-        const isMiddle = route.name === "Messages";
+        const isActive = isFocused;
 
         return (
           <TouchableOpacity
             key={route.key}
             onPress={onPress}
-            style={[styles.tabButton, isMiddle && styles.middleButtonWrapper]}
+            style={[styles.tabButton, isActive && styles.middleButtonWrapper]}
             activeOpacity={0.9}
           >
             <View
               style={[
                 styles.iconContainer,
-                isMiddle
-                  ? styles.middleButton
-                  : isFocused
-                    ? styles.activeTab
-                    : undefined,
+                isActive ? styles.middleButton : undefined,
               ]}
             >
               <Icon
                 name={iconName}
-                size={isMiddle ? 30 : 24}
-                color={isMiddle || isFocused ? "#007BFF" : "#888"}
+                size={isActive ? 30 : 24}
+                color={isActive ? COLORS.light.background : "#888"}
               />
-              {!isMiddle &&
-                (typeof label === "string" ? (
-                  <Text style={[styles.label, isFocused && styles.activeLabel]}>
-                    {label}
-                  </Text>
-                ) : null)}
+              {!isActive && (
+                <Text style={[styles.label, isFocused && styles.activeLabel]}>
+                  {label}
+                </Text>
+              )}
             </View>
           </TouchableOpacity>
         );
@@ -97,9 +120,13 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({
 export default function BottomTabNavigator() {
   return (
     <Tab.Navigator
-      screenOptions={{ headerShown: false }}
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: { position: "absolute", bottom: 0 },
+      }}
       tabBar={(props) => <CustomTabBar {...props} />}
     >
+      <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="LeComite" component={LeComite} />
       <Tab.Screen name="Documents" component={Documents} />
       <Tab.Screen name="Messages" component={Messages} />
@@ -114,11 +141,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     backgroundColor: "#fff",
     paddingVertical: 10,
-    elevation: 5,
+    // marginBottom: 10,
+    elevation: 15,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     shadowColor: "#000",
-    shadowOpacity: 0.1,
+    shadowOpacity: 10,
     shadowOffset: { width: 0, height: -3 },
     shadowRadius: 8,
   } as ViewStyle,
@@ -135,15 +163,12 @@ const styles = StyleSheet.create({
     marginTop: 2,
     color: "#888",
   } as TextStyle,
-  activeTab: {
-    transform: [{ scale: 1.1 }],
-  } as ViewStyle,
   activeLabel: {
-    color: "#007BFF",
+    color: COLORS.light.primary,
     fontWeight: "600",
   } as TextStyle,
   middleButtonWrapper: {
-    top: -20,
+    top: -32,
     width: 70,
     height: 70,
     borderRadius: 35,
@@ -157,10 +182,10 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
   } as ViewStyle,
   middleButton: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     borderRadius: 30,
-    backgroundColor: "#007BFF",
+    backgroundColor: COLORS.light.primary,
     justifyContent: "center",
     alignItems: "center",
   } as ViewStyle,

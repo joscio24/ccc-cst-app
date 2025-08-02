@@ -1,12 +1,12 @@
 import { StyleSheet } from "react-native";
-import { Colors } from "../theme/colors";
+import { COLORS, Colors } from "../theme/colors";
 
 const styles = StyleSheet.create({
   page: {
     flex: 1,
     backgroundColor: "#f9f9f9",
-    paddingHorizontal: 16,
-    paddingTop: 20,
+    paddingHorizontal: 10,
+    // paddingTop: 20,
   },
   header: {
     alignItems: "center",
@@ -79,6 +79,28 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 20
   },
+  header1: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    // marginBlockStart: 22,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: "#fff",
+  },
+  titleSimple2: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: COLORS.light.primary,
+  },
+  headerIcons: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  iconRight: {
+    marginRight: 16,
+  },
+  
   actionText: {
     marginLeft: 4,
     fontSize: 13,
@@ -88,7 +110,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#fff",
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
     borderRadius: 10,
     height: 40,
     marginBottom: 10,

@@ -22,5 +22,68 @@
       "decisions": "Decisions",
       "events": "Events"
     }
+  },
+
+  "notifications": {
+    "title": "Notifications",
+    "clearAll": "Clear all",
+    "noNotifications": "No notifications available",
+    "newMessage": "New message received",
+    "newMessageDesc": "You have a new message from the admin.",
+    "updateAvailable": "Update available",
+    "updateAvailableDesc": "A new app update is ready to install.",
+    "systemAlert": "System alert",
+    "systemAlertDesc": "There was an unusual activity in your account."
+  },
+  "bottomTabs": {
+    "Home": "Home",
+    "LeComite": "Committee",
+    "Documents": "Documents",
+    "Messages": "Messages",
+    "Cantiques": "Hymns"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "notifications": "Notifications",
+    "darkMode": "Dark Mode",
+    "privacyPolicy": "Privacy Policy",
+    "aboutApp": "About App",
+    "selectLanguage": "Select Language"
+  },
+  "lang": {
+    "en": "English",
+    "fr": "French",
+    "yo": "Yoruba",
+    "gou": "Fon",
+    "es": "Spanish"
+  },
+  "common": {
+    "close": "Close",
+    "cancel": "Cancel",
+    "apply": "Apply",
+    "ok": "OK"
+  },
+  "documents": {
+    "title": "Documents"
+  },
+  "doc_10_commandments": "The 10 Commandments of God",
+  "doc_church_history": "The History of the Celestial Church",
+  "doc_osh_offa": "Papa Samuel Bilewu Joseph Oshoffa",
+  "doc_constitution": "The Blue Constitution of the ECC",
+  "doc_light_on_ecc": "Light on ECC",
+  "doc_11_ordnances": "The 11 Ordinances of the ECC",
+  "doc_4_sacraments": "The 4 Sacraments of the ECC",
+  "doc_12_forbidden": "The 12 Forbidden Acts of the ECC",
+  "doc_institutions": "The Institutions of the ECC",
+  "messages": {
+    "title": "ECC Forums",
+    "typeMessage": "Type a message...",
+    "suggestedRooms": "Suggested Rooms for You",
+    "apply": "Apply",
+    "requestTitle": "Request to Join",
+    "requestText": "Do you want to apply to join \"{{name}}\"? Moderators will review your profile before approval.",
+    "requestSent": "Application Sent ✅",
+    "confirmText": "Your request to join \"{{name}}\" has been sent successfully."
   }
 }

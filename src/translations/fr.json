@@ -21,5 +21,67 @@
       "decisions": "Décisions",
       "events": "Événements"
     }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "clearAll": "Tout effacer",
+    "noNotifications": "Aucune notification",
+    "newMessage": "Nouveau message reçu",
+    "newMessageDesc": "Vous avez un nouveau message de l’administrateur.",
+    "updateAvailable": "Mise à jour disponible",
+    "updateAvailableDesc": "Une nouvelle mise à jour de l’application est prête à être installée.",
+    "systemAlert": "Alerte système",
+    "systemAlertDesc": "Une activité inhabituelle a été détectée sur votre compte."
+  },
+  "bottomTabs": {
+    "Home": "Accueil",
+    "LeComite": "Comité",
+    "Documents": "Documents",
+    "Messages": "Forums",
+    "Cantiques": "Cantiques"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "language": "Langue",
+    "notifications": "Notifications",
+    "darkMode": "Mode sombre",
+    "privacyPolicy": "Politique de confidentialité",
+    "aboutApp": "À propos de l'application",
+    "selectLanguage": "Choisir la langue"
+  },
+  "lang": {
+    "en": "Anglais",
+    "fr": "Français",
+    "yo": "Yoruba",
+    "gou": "Fon",
+    "es": "Espagnol"
+  },
+  "common": {
+    "close": "Fermer",
+    "cancel": "Annuler",
+    "apply": "Demander",
+    "ok": "OK"
+  },
+  "documents": {
+    "title": "Documents de l'ECC"
+  },
+
+  "doc_10_commandments": "10 Commandements",
+  "doc_church_history": "Histoire de l'Église",
+  "doc_osh_offa": "PPF SBJ OSHOFFA",
+  "doc_constitution": "Constitution de l’ECC",
+  "doc_light_on_ecc": "Lumière sur l’ECC",
+  "doc_11_ordnances": "11 Ordonnances",
+  "doc_4_sacraments": "4 Sacrements",
+  "doc_12_forbidden": "12 Actes Interdits",
+  "doc_institutions": "Institutions ECC",
+  "messages": {
+    "title": "Forums ECC",
+    "suggestedRooms": "Salons suggérés pour vous",
+    "apply": "Demander",
+    "requestTitle": "Demande d'adhésion",
+    "requestText": "Souhaitez-vous demander à rejoindre \"{{name}}\" ? Les modérateurs examineront votre profil avant approbation.",
+    "requestSent": "Demande envoyée ✅",
+    "confirmText": "Votre demande pour rejoindre \"{{name}}\" a été envoyée avec succès."
   }
 }
