@@ -1,9 +1,11 @@
 import React from "react";
-import { View, Text, StyleSheet, FlatList, Pressable } from "react-native";
+import { View, Text, StyleSheet, FlatList, Pressable, Image, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { COLORS } from "../theme/colors";
-import { Icon } from "@roninoss/icons";
+// import { Icon } from "@roninoss/icons";
+import Icon from "react-native-vector-icons/Ionicons";
+import styless from "./styles";
 
 const documentKeys = [
   "doc_10_commandments",
@@ -25,6 +27,30 @@ export default function Documents({ navigation }: any) {
 
   return (
     <View style={styles.container}>
+<View style={styless.header1}>
+        <Image
+          source={require("../../assets/images/appLogo.png")}
+          style={styless.logo}
+        />
+        {/* <Text style={styles.titleSimple2}>{t("home.explore")}</Text> */}
+
+        <View style={styless.headerIcons}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Notifications")}
+          >
+            <Icon
+              name="notifications-outline"
+              size={24}
+              color="#444"
+              style={styless.iconRight}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
+            <Icon name="settings-outline" size={24} color="#444" />
+          </TouchableOpacity>
+        </View>
+      </View>
       <Text style={styles.title}>{t("documents.title")}</Text>
 
       <FlatList
@@ -38,7 +64,7 @@ export default function Documents({ navigation }: any) {
             {/* <MaterialIcons name="description" size={24} color="#008080" /> */}
             <View style={styles.iconContainer}>
               <Icon
-                name="file-document"
+                name="document"
                 size={24}
                 color={COLORS.light.primary}
               />
@@ -60,13 +86,16 @@ export default function Documents({ navigation }: any) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff", padding: 10 },
+  container: { flex: 1, backgroundColor: "#fff" },
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginVertical: 16,
-    marginBlockStart: 30,
+    // marginVertical: 16,
+    paddingStart: 20,
     color: COLORS.light.primary,
+    backgroundColor: COLORS.white,
+    padding: 10,
+    elevation:1,
     // textAlign: "center",
   },
   card: {

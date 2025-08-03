@@ -36,7 +36,7 @@ export default [
     content:
       "Rejoignez-nous pour les célébrations du 50ème anniversaire de l'Église à partir du 15 août. Événements spéciaux, prières et repas communautaires sont prévus.",
     image: require("../../assets/images/posts/post.png"),
-    audio: require("../../assets/audio/demo.mp3"), // sample audio
+    audio: "http://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Kangaroo_MusiQue_-_The_Neverwritten_Role_Playing_Game.mp3", // sample audio
   },
   {
     id: "12",

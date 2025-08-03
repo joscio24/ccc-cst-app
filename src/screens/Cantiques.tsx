@@ -1,9 +1,10 @@
 import React from "react";
-import { View, Text, StyleSheet, FlatList, Pressable } from "react-native";
+import { View, Text, StyleSheet, FlatList, Pressable,Image, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { COLORS } from "../theme/colors";
 import Icon from "react-native-vector-icons/Ionicons";
+import styless from "./styles";
 
 const cantiqueKeys = [
   { key: "cantique_goun", label: "Cantique en Goun" },
@@ -21,6 +22,30 @@ export default function Cantiques({ navigation }: any) {
 
   return (
     <View style={styles.container}>
+      <View style={styless.header1}>
+        <Image
+          source={require("../../assets/images/appLogo.png")}
+          style={styless.logo}
+        />
+        {/* <Text style={styles.titleSimple2}>{t("home.explore")}</Text> */}
+
+        <View style={styless.headerIcons}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Notifications")}
+          >
+            <Icon
+              name="notifications-outline"
+              size={24}
+              color="#444"
+              style={styless.iconRight}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
+            <Icon name="settings-outline" size={24} color="#444" />
+          </TouchableOpacity>
+        </View>
+      </View>
       <Text style={styles.title}>{t("cantiques.title")}</Text>
 
       <FlatList
@@ -51,13 +76,16 @@ export default function Cantiques({ navigation }: any) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff", padding: 10 },
+  container: { flex: 1, backgroundColor: "#fff" },
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginVertical: 16,
-    marginBlockStart: 30,
+    // marginVertical: 16,
+    paddingStart: 20,
     color: COLORS.light.primary,
+    backgroundColor: COLORS.white,
+    padding: 10,
+    elevation:1,
   },
   card: {
     backgroundColor: "#fff",

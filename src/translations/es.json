@@ -7,8 +7,33 @@
   "benefit3": "Únete al chat mundial con moderadores",
   "login": "Iniciar sesión",
   "signup": "Registrarse",
+  "email": "Correo electrónico",
+  "password": "Contraseña",
+  "emailPlaceholder": "Introduce tu correo electrónico",
+  "passwordPlaceholder": "Introduce tu contraseña",
+  "noAccountSignUp": "¿No tienes una cuenta? Regístrate",
+  "haveAccountLogin": "¿Ya tienes una cuenta? Inicia sesión",
+  "firstname": "Nombre",
+  "lastname": "Apellido",
+  "parishName": "Nombre de la parroquia",
+  "phone": "Número de teléfono",
+  "confirmPassword": "Confirmar contraseña",
+  "signupTitle": "Crear una cuenta",
+  "next": "Siguiente",
+  "back": "Atrás",
+  "selectCountry": "Selecciona tu país",
   "guest": "Continuar como invitado",
-  "noAccountSignUp": "Don't have an account? Regiter here.",
+  "onboard": {
+    "skip": "Saltar",
+    "next": "Siguiente",
+    "start": "Comenzar",
+    "title1": "Bienvenido a la App Celestial",
+    "text1": "Unir a los Celestiales del mundo y fortalecer la fe con leyes y noticias originales.",
+    "title2": "Preservando Nuestra Fundación",
+    "text2": "Esta aplicación apoya el trabajo de la Comisión Superior de Transición en restaurar la visión de Oshoffa.",
+    "title3": "Mantente Conectado",
+    "text3": "Recibe noticias, himnos, documentos y únete al chat global Celestial."
+  },
   "home": {
     "explore": "Explorar",
     "searchPlaceholder": "Buscar aquí",
@@ -39,12 +64,20 @@
     "Messages": "Mensajes",
     "Cantiques": "Canciones"
   },
-  "settings":{
-    "title":"Settings",
-    "language":"Langue d'affichage",
-    "c":"",
-    "b":"",
-    "n":""
+  "settings": {
+    "title": "Settings",
+    "language": "Langue d'affichage",
+    "c": "",
+    "b": "",
+    "n": ""
+  },
+  "cantiques": {
+    "title": "Cánticos de la ECC",
+    "en_fr": "Cántico en Francés",
+    "en_yo": "Cántico en Yoruba",
+    "en_gou": "Cántico en Goun",
+    "en_fon": "Cántico en Fon",
+    "en_es": "Cántico en Español"
   },
   "documents": {
     "title": "Documents"
@@ -61,6 +94,7 @@
   "messages": {
     "title": "Foros ECC",
     "suggestedRooms": "Salas sugeridas para ti",
+    "audiMessage": "Mensaje de Voz",
     "apply": "Solicitar",
     "requestTitle": "Solicitud para unirse",
     "requestText": "¿Deseas solicitar unirte a \"{{name}}\"? Los moderadores revisarán tu perfil antes de aprobarlo.",

@@ -6,10 +6,35 @@
   "youreJustGettingStarted": "Décisions - Reformes - Discussion",
   "benefit2": "Fò nyɔn kɔ̀ mà wɛnɛ̀ gbɔ̀nɔn",
   "benefit3": "Hùn sɔn kɔ́n gbè àzɔ sɔn hùn gbè mànyɔ gɔ",
-  "login": "Tónu",
-  "signup": "Kplɔnù",
+  "login": "Hwin",
+  "signup": "Dè gblɔn",
+  "email": "Kɔrɛl adirɛsi",
+  "password": "Sɛtɔwɔ",
+  "emailPlaceholder": "Tɔn kɔrɛl kɔdɔ",
+  "passwordPlaceholder": "Tɔn sɛtɔwɔ kɔdɔ",
+  "noAccountSignUp": "Nɔ fɔ nɔn kɔhɛ? Dè gblɔn",
+  "haveAccountLogin": "Nɔ gblɔn nɔn? Hwin",
+  "firstname": "Dzidodo",
+  "lastname": "Kpakpato",
+  "parishName": "Fɔn ṣɔnu",
+  "phone": "Fɔn numɛ",
+  "confirmPassword": "Wɛlɛ sɛtɔwɔ",
+  "signupTitle": "Fɔ gblɔn",
+  "next": "Dɔ",
+  "back": "Hɛn",
+  "selectCountry": "Dɔ nunu xɔxɔ",
   "guest": "Tónu sɔn wɛ̀",
-  "noAccountSignUp": "Don't have an account? Regiter here.",
+  "onboard": {
+    "skip": "Wɛ ɖo",
+    "next": "Lɛgɛ",
+    "start": "Bɔ gɛ",
+    "title1": "Wɛ gɔn lɛ App Celestial",
+    "text1": "Sɔn Celestial ɖo to wɛ hɔn lɛ a hwe dɔ e tɔn gɛ sɔ jé ɖo gɛ jɛn wi lɛ Oshoffa.",
+    "title2": "Zɔn dɔ sɔ nɔn tɔn",
+    "text2": "App lɛ nɔn ɖo to Commission Suprême de Transition tɔn a zɔn Oshoffa gbɛ.",
+    "title3": "Sɔn lɛ gbo",
+    "text3": "Gba alɔ, hymn, documɛnt e tɔn gbo ɖo global chatroom lɛ Celestial."
+  },
   "home": {
     "explore": "Zɔ nɔn",
     "searchPlaceholder": "Wá nɔ hɛn",
@@ -62,9 +87,17 @@
     "apply": "Gbé to",
     "ok": "Wa"
   },
-  
+
   "documents": {
     "title": "Documents"
+  },
+  "cantiques": {
+    "title": "Zan Ɖe ECC",
+    "en_fr": "Zan Fɛɛsi",
+    "en_yo": "Zan Yorùbá",
+    "en_gou": "Zan Goun",
+    "en_fon": "Zan Fɔ̀ngbè",
+    "en_es": "Zan Esipanyòl"
   },
   "doc_10_commandments": "10 Gbèlè Lẹ̀xó",
   "doc_church_history": "Dòtó Ègléz",
@@ -78,6 +111,7 @@
   "messages": {
     "title": "Zɔnnu ECC",
     "suggestedRooms": "Zɔnnu tɔn ɖo nu ɖò nú wɛ",
+    "audiMessage": "Xwéxwé Dò",
     "apply": "Gbé to",
     "requestTitle": "Wɛ gbè ɖò nú",
     "requestText": "È wɛ gbé ɖò nú \"{{name}}\"? Àzɔtɔ tɔn ɔ wɛ wɛ àkpata nú wɛ nyi sɔ àtɛ ló mɛ.",

@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     backgroundColor: "#fff",
+    // elevation: 1
   },
   titleSimple2: {
     fontSize: 20,
@@ -190,7 +191,11 @@ const styles = StyleSheet.create({
   },
   
   
-  
+  logo: {
+    height: 40,
+    width: 50,
+    objectFit: "contain",
+  },
 
   
   quoteCard: {

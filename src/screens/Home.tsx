@@ -16,6 +16,8 @@ import { Audio } from "expo-av";
 
 import postsData from "./posts";
 import styles from "./styles";
+import { COLORS } from "../theme/colors";
+import AudioPlayer from "./audioplayer";
 
 const Home = ({ navigation }: any) => {
   const { t } = useTranslation();
@@ -64,39 +66,48 @@ const Home = ({ navigation }: any) => {
   const renderPostMedia = (post: any) => {
     if (post.video) {
       return (
-        <Video
-          source={post.video}
-          style={videoStyles.video}
-          controls={true}
-          resizeMode="cover"
-          paused={true}
-        />
-      );
-    }
-    if (post.audio) {
-      return (
         <TouchableOpacity
-          style={audioStyles.audioContainer}
-          onPress={() => playAudio(post.audio, post.id)}
+          style={{ position: "relative" }}
+          onPress={() => navigation.navigate("PostDetail", { post })}
         >
-          <Icon
-            name={playingId === post.id ? "pause-circle" : "play-circle"}
-            size={40}
-            color="#007bff"
+          <Image
+            source={
+              post.thumbnail || require("../../assets/images/posts/post.png")
+            }
+            style={styles.singleImage}
           />
-          <Text style={audioStyles.audioText}>
-            {playingId === post.id
-              ? t("home.audioPlaying")
-              : t("home.audioPlay")}
-          </Text>
+  
+          <View
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              height: 70,
+              width: 70,
+              transform: [{ translateX: -35 }, { translateY: -35 }],
+              backgroundColor: "rgba(0,0,0,0.6)",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 35,
+            }}
+          >
+            <Icon name="play" size={30} color={COLORS.white} />
+          </View>
         </TouchableOpacity>
       );
     }
+  
+    if (post.audio) {
+      console.log("post.audio:", post.audio, typeof post.audio);
+      return <AudioPlayer audioFileUri={post.audio} />; 
+    }
+  
     if (post.images?.length) {
       return renderPostImages(post.images);
     }
     return null;
   };
+  
 
   // Render post for NEWS (standard post card)
   const renderNewsPost = (post: any) => (
@@ -106,7 +117,9 @@ const Home = ({ navigation }: any) => {
         <Text style={styles.username}>{post.user.name}</Text>
       </View>
 
-      <TouchableOpacity onPress={() => navigation.navigate("PostDetail", { post })}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("PostDetail", { post })}
+      >
         {renderPostMedia(post)}
       </TouchableOpacity>
 
@@ -117,7 +130,9 @@ const Home = ({ navigation }: any) => {
         {post.text}
       </Text>
       {post.isLongText && (
-        <TouchableOpacity onPress={() => navigation.navigate("PostDetail", { post })}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("PostDetail", { post })}
+        >
           <Text style={styles.seeMore}>{t("home.seeMore")}</Text>
         </TouchableOpacity>
       )}
@@ -145,7 +160,9 @@ const Home = ({ navigation }: any) => {
   // Render announcement post (different style)
   const renderAnnouncementPost = (post: any) => (
     <View style={[styles.postCard, { backgroundColor: "#e7f3ff" }]}>
-      <Text style={[styles.titleSimple, { marginBottom: 6 }]}>{post.title}</Text>
+      <Text style={[styles.titleSimple, { marginBottom: 6 }]}>
+        {post.title}
+      </Text>
       <Text style={{ color: "#666", fontSize: 12, marginBottom: 6 }}>
         {post.date}
       </Text>
@@ -158,11 +175,16 @@ const Home = ({ navigation }: any) => {
   // Render reform post
   const renderReformPost = (post: any) => (
     <View style={[styles.postCard, { backgroundColor: "#fff7e6" }]}>
-      <Text style={[styles.titleSimple, { marginBottom: 6 }]}>{post.title}</Text>
-      <Text style={{ fontWeight: "bold", marginBottom: 4 }}>{post.summary}</Text>
+      <Text style={[styles.titleSimple, { marginBottom: 6 }]}>
+        {post.title}
+      </Text>
+      <Text style={{ fontWeight: "bold", marginBottom: 4 }}>
+        {post.summary}
+      </Text>
       <Text>{post.fullText}</Text>
       <Text style={{ fontSize: 10, marginTop: 8, color: "#555" }}>
-        {t("home.updatedBy")}: {post.updatedBy} | {t("home.updatedOn")}: {post.updatedOn}
+        {t("home.updatedBy")}: {post.updatedBy} | {t("home.updatedOn")}:{" "}
+        {post.updatedOn}
       </Text>
     </View>
   );
@@ -170,11 +192,15 @@ const Home = ({ navigation }: any) => {
   // Render decision post
   const renderDecisionPost = (post: any) => (
     <View style={[styles.postCard, { backgroundColor: "#e6fff7" }]}>
-      <Text style={[styles.titleSimple, { marginBottom: 6 }]}>{post.decisionTitle}</Text>
+      <Text style={[styles.titleSimple, { marginBottom: 6 }]}>
+        {post.decisionTitle}
+      </Text>
       <Text style={{ color: "#666", fontSize: 12, marginBottom: 6 }}>
         {post.decisionDate}
       </Text>
-      <Text style={{ fontWeight: "bold", marginBottom: 6 }}>{post.decisionSummary}</Text>
+      <Text style={{ fontWeight: "bold", marginBottom: 6 }}>
+        {post.decisionSummary}
+      </Text>
       <Text>{post.decisionDetails}</Text>
     </View>
   );
@@ -182,8 +208,12 @@ const Home = ({ navigation }: any) => {
   // Render event post
   const renderEventPost = (post: any) => (
     <View style={[styles.postCard, { backgroundColor: "#f0f7ff" }]}>
-      <Text style={[styles.titleSimple, { marginBottom: 6 }]}>{post.eventName}</Text>
-      <Text style={{ color: "#666", fontSize: 12 }}>{post.eventDate} - {post.eventLocation}</Text>
+      <Text style={[styles.titleSimple, { marginBottom: 6 }]}>
+        {post.eventName}
+      </Text>
+      <Text style={{ color: "#666", fontSize: 12 }}>
+        {post.eventDate} - {post.eventLocation}
+      </Text>
       <Image source={post.bannerImage} style={styles.singleImage} />
       <Text style={{ marginTop: 10 }}>{post.description}</Text>
     </View>
@@ -214,10 +244,16 @@ const Home = ({ navigation }: any) => {
     <View style={styles.page}>
       {/* Header */}
       <View style={styles.header1}>
-        <Text style={styles.titleSimple2}>{t("home.explore")}</Text>
+        <Image
+                source={require("../../assets/images/appLogo.png")}
+                style={styles.logo}
+              />
+        {/* <Text style={styles.titleSimple2}>{t("home.explore")}</Text> */}
 
         <View style={styles.headerIcons}>
-          <TouchableOpacity onPress={() => navigation.navigate("Notifications")}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Notifications")}
+          >
             <Icon
               name="notifications-outline"
               size={24}

@@ -3,160 +3,196 @@ import {
   View,
   Text,
   TextInput,
+  Image,
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
-  Image,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
+  Modal,
+  FlatList,
   Dimensions,
 } from "react-native";
+import LinearGradient from "react-native-linear-gradient";
 import { useTranslation } from "react-i18next";
+import Icon from "react-native-vector-icons/Ionicons";
 import { Colors } from "../../theme/colors";
-import { useAppTheme } from "../../ThemeContext"; 
-import Icon from "react-native-vector-icons/Ionicons"; 
-// import { Picker } from "@react-native-picker/picker";
-import countryData from "../../data/country.json";
+import { useAppTheme } from "../../ThemeContext";
+
+const { width } = Dimensions.get("window");
+
+const countries = [
+  { code: "BJ", name: "Benin" },
+  { code: "NG", name: "Nigeria" },
+  { code: "FR", name: "France" },
+  { code: "US", name: "United States" },
+  { code: "GB", name: "United Kingdom" },
+];
 
 const SignupScreen = ({ navigation }: any) => {
   const { t } = useTranslation();
   const { mode } = useAppTheme();
   const isDark = mode === "dark";
 
-  const backgroundColor = isDark
-    ? Colors.darkBackground
-    : Colors.lightBackground;
   const textColor = isDark ? Colors.textDark : Colors.textLight;
   const inputBg = isDark ? Colors.inputDark : Colors.inputLight;
 
-  // Extract country list from JSON
-  const countryList = Object.entries(countryData.country).map(
-    ([code, name]) => ({
-      code,
-      name,
-    })
-  );
   const [step, setStep] = useState(1);
 
-  const { width, height } = Dimensions.get("window");
-  // States
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [country, setCountry] = useState("");
-  const [parishName, setParishName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [countryModalVisible, setCountryModalVisible] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState("Benin");
+
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    parish: "",
+    phone: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleInputChange = (key: string, value: string) => {
+    setForm({ ...form, [key]: value });
+  };
+
+  const selectCountry = (name: string) => {
+    setSelectedCountry(name);
+    setCountryModalVisible(false);
+  };
+
+  const goNext = () => {
+    if (step < 3) setStep(step + 1);
+    else navigation.navigate("MainNav");
+  };
+
+  const goBack = () => {
+    if (step > 1) setStep(step - 1);
+    else navigation.goBack();
+  };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor }]}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
-        keyboardVerticalOffset={50}
-      >
-        <ScrollView contentContainerStyle={styles.scroll}>
-          <View style={[styles.container2, { marginBlockStart: 10 }]}>
-            <Image
-              source={require("../../../assets/images/celeLogo.png")}
-              style={styles.logo} 
-              resizeMode="contain"
-            />
-          </View>
+    <LinearGradient colors={["#E0F7FA", "#FDFEFF"]} style={styles.container}>
+      <SafeAreaView style={styles.innerContainer}>
+        <View style={styles.logoContainer}>
+          <Image
+            source={require("../../../assets/images/appLogo.png")}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+        </View>
+
+        <View style={styles.inputDrawer}>
           <Text style={[styles.title, { color: textColor }]}>
-            {t("signup")}
+            {t("signupTitle")}
           </Text>
 
-          {step === 1 ? (
+          {step === 1 && (
             <>
+              <Text style={[styles.label, { color: textColor }]}>
+                {t("firstname")}
+              </Text>
               <TextInput
                 placeholder={t("firstname")}
-                placeholderTextColor="#888"
+                placeholderTextColor="#aaa"
                 style={[
                   styles.input,
                   { backgroundColor: inputBg, color: textColor },
                 ]}
-                value={firstName}
-                onChangeText={setFirstName}
+                value={form.firstName}
+                onChangeText={(text) => handleInputChange("firstName", text)}
               />
+
+              <Text style={[styles.label, { color: textColor }]}>
+                {t("lastname")}
+              </Text>
               <TextInput
                 placeholder={t("lastname")}
-                placeholderTextColor="#888"
+                placeholderTextColor="#aaa"
                 style={[
                   styles.input,
                   { backgroundColor: inputBg, color: textColor },
                 ]}
-                value={lastName}
-                onChangeText={setLastName}
+                value={form.lastName}
+                onChangeText={(text) => handleInputChange("lastName", text)}
               />
-              <View style={[styles.input, { backgroundColor: inputBg }]}>
-                {/* <Picker
-                  selectedValue={country}
-                  onValueChange={(value) => setCountry(value)}
-                  style={{ color: textColor }}
-                  dropdownIconColor={textColor} 
-                >
-                  <Picker.Item label={t("selectCountry")} value="" />
-                  {countryList.map((c) => (
-                    <Picker.Item key={c.code} label={c.name} value={c.name} />
-                  ))}
-                </Picker> */}
-              </View>
+
+              <Text style={[styles.label, { color: textColor }]}>
+                {t("parishName")}
+              </Text>
               <TextInput
                 placeholder={t("parishName")}
-                placeholderTextColor="#888"
+                placeholderTextColor="#aaa"
                 style={[
                   styles.input,
                   { backgroundColor: inputBg, color: textColor },
                 ]}
-                value={parishName}
-                onChangeText={setParishName}
+                value={form.parish}
+                onChangeText={(text) => handleInputChange("parish", text)}
               />
-              <TouchableOpacity
-                style={[styles.button, { backgroundColor: Colors.primary }]}
-                onPress={() => setStep(2)}
-              >
-                <Text style={styles.buttonText}>{t("next")}</Text>
-              </TouchableOpacity>
             </>
-          ) : (
+          )}
+
+          {step === 2 && (
             <>
+              <Text style={[styles.label, { color: textColor }]}>
+                {t("phone")}
+              </Text>
               <TextInput
                 placeholder={t("phone")}
-                placeholderTextColor="#888"
+                placeholderTextColor="#aaa"
                 keyboardType="phone-pad"
                 style={[
                   styles.input,
                   { backgroundColor: inputBg, color: textColor },
                 ]}
-                value={phone}
-                onChangeText={setPhone}
+                value={form.phone}
+                onChangeText={(text) => handleInputChange("phone", text)}
               />
+
+              <Text style={[styles.label, { color: textColor }]}>
+                {t("email")}
+              </Text>
               <TextInput
-                placeholder={t("email")}
-                placeholderTextColor="#888"
+                placeholder={t("emailPlaceholder")}
+                placeholderTextColor="#aaa"
                 keyboardType="email-address"
                 style={[
                   styles.input,
                   { backgroundColor: inputBg, color: textColor },
                 ]}
-                value={email}
-                onChangeText={setEmail}
+                value={form.email}
+                onChangeText={(text) => handleInputChange("email", text)}
               />
+
+              <Text style={[styles.label, { color: textColor }]}>
+                {t("selectCountry")}
+              </Text>
+              <TouchableOpacity
+                style={[styles.input, styles.countryInput]}
+                onPress={() => setCountryModalVisible(true)}
+              >
+                <Text style={{ color: textColor }}>{selectedCountry}</Text>
+                <Icon name="chevron-down" size={20} color={textColor} />
+              </TouchableOpacity>
+            </>
+          )}
+
+          {step === 3 && (
+            <>
+              <Text style={[styles.label, { color: textColor }]}>
+                {t("password")}
+              </Text>
               <View
                 style={[styles.passwordContainer, { backgroundColor: inputBg }]}
               >
                 <TextInput
-                  placeholder={t("password")}
+                  placeholder={t("passwordPlaceholder")}
+                  placeholderTextColor="#aaa"
                   secureTextEntry={!showPassword}
-                  placeholderTextColor="#888"
                   style={[styles.passwordInput, { color: textColor }]}
-                  value={password}
-                  onChangeText={setPassword}
+                  value={form.password}
+                  onChangeText={(text) => handleInputChange("password", text)}
                 />
                 <TouchableOpacity
                   onPress={() => setShowPassword(!showPassword)}
@@ -168,125 +204,153 @@ const SignupScreen = ({ navigation }: any) => {
                   />
                 </TouchableOpacity>
               </View>
+
+              <Text style={[styles.label, { color: textColor }]}>
+                {t("confirmPassword")}
+              </Text>
               <View
                 style={[styles.passwordContainer, { backgroundColor: inputBg }]}
               >
                 <TextInput
-                  placeholder={t("confirmPassword")}
-                  secureTextEntry={!showConfirmPassword}
-                  placeholderTextColor="#888"
+                  placeholder={t("passwordPlaceholder")}
+                  placeholderTextColor="#aaa"
+                  secureTextEntry={!showConfirm}
                   style={[styles.passwordInput, { color: textColor }]}
-                  value={confirmPassword}
-                  onChangeText={setConfirmPassword}
+                  value={form.confirmPassword}
+                  onChangeText={(text) =>
+                    handleInputChange("confirmPassword", text)
+                  }
                 />
-                <TouchableOpacity
-                  onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-                >
+                <TouchableOpacity onPress={() => setShowConfirm(!showConfirm)}>
                   <Icon
-                    name={showConfirmPassword ? "eye-off" : "eye"}
+                    name={showConfirm ? "eye-off" : "eye"}
                     size={20}
                     color={textColor}
                   />
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                style={[styles.button, { backgroundColor: Colors.primary }]}
-                onPress={() => {
-                  // submit handler
-                }}
-              >
-                <Text style={styles.buttonText}>{t("signup")}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => setStep(1)}>
-                <Text style={[styles.link, { color: Colors.primary }]}>
-                  {t("back")}
-                </Text>
-              </TouchableOpacity>
             </>
           )}
 
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity
+            onPress={goNext}
+            style={[styles.button, { backgroundColor: Colors.primary }]}
+          >
+            <Text style={styles.buttonText}>
+              {step < 3 ? t("next") : t("signup")}
+            </Text>
+          </TouchableOpacity>
+
+          {step > 1 && (
+            <TouchableOpacity onPress={goBack}>
+              <Text style={[styles.link, { color: Colors.primary }]}>
+                {t("back")}
+              </Text>
+            </TouchableOpacity>
+          )}
+
+          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
             <Text style={[styles.link, { color: Colors.primary }]}>
               {t("haveAccountLogin")}
             </Text>
           </TouchableOpacity>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        </View>
+      </SafeAreaView>
+
+      <Modal visible={countryModalVisible} animationType="slide" transparent>
+        <View style={styles.modalContainer}>
+          <View style={styles.modal}>
+            <Text style={styles.modalTitle}>{t("selectCountry")}</Text>
+            <FlatList
+              data={countries}
+              keyExtractor={(item) => item.code}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => selectCountry(item.name)}
+                  style={styles.modalItem}
+                >
+                  <Text>{item.name}</Text>
+                </TouchableOpacity>
+              )}
+            />
+            <TouchableOpacity onPress={() => setCountryModalVisible(false)}>
+              <Text style={styles.modalClose}>{t("back")}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </LinearGradient>
   );
 };
 
-
-const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
-
-    
-  safeArea: {
-    flex: 1,
-
-    // padding: 24,
-  },
-  container: {
-    flex: 1,
-    width: width,
-    minHeight: height,
-    justifyContent: "center",
-  },
-  scroll: {
-    
+  container: { flex: 1 },
+  innerContainer: { flex: 1, justifyContent: "flex-end" },
+  logoContainer: { alignItems: "center", marginBottom: 30, padding: 20 },
+  logo: { height: 140 },
+  inputDrawer: {
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
     padding: 24,
-    
-    justifyContent: "center",
-    // alignItems: "center"
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 4,
   },
   title: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
   },
+  label: { fontSize: 14, marginBottom: 4, marginTop: 10 },
   input: {
-    // padding: 12,
-    borderRadius: 8,
+    padding: 12,
+    borderRadius: 10,
     fontSize: 16,
-    marginBottom: 16,
-  },
-  container2: {
-    // flex: 1,
-    // height: 100,
-    justifyContent: "center",
+    marginBottom: 12,
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-    padding: 24,
-  },
-  logo: {
-    height: 120,
   },
   passwordContainer: {
     flexDirection: "row",
     alignItems: "center",
+    borderRadius: 10,
     paddingHorizontal: 12,
-    borderRadius: 8,
     marginBottom: 16,
   },
-  passwordInput: {
-    flex: 1,
-    paddingVertical: 12,
-    fontSize: 16,
-  },
+  passwordInput: { flex: 1, paddingVertical: 12, fontSize: 16 },
   button: {
     padding: 16,
-    borderRadius: 8,
+    borderRadius: 12,
     alignItems: "center",
     marginVertical: 12,
   },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
+  buttonText: { color: "#fff", fontSize: 16 },
+  link: { textAlign: "center", marginTop: 10 },
+  countryInput: {
+    justifyContent: "space-between",
+    flexDirection: "row",
+    alignItems: "center",
   },
-  link: {
-    textAlign: "center",
-    marginTop: 10,
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.4)",
   },
+  modal: {
+    backgroundColor: "#fff",
+    margin: 32,
+    borderRadius: 16,
+    padding: 20,
+    maxHeight: "70%",
+  },
+  modalTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 12 },
+  modalItem: { paddingVertical: 10 },
+  modalClose: { color: "#007AFF", marginTop: 20, textAlign: "center" },
 });
 
 export default SignupScreen;

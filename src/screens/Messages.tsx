@@ -1,23 +1,25 @@
 import React, { useState } from "react";
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  FlatList, 
-  Pressable, 
-  Image, 
-  Modal, 
-  TouchableOpacity 
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Pressable,
+  Image,
+  Modal,
+  TouchableOpacity,
 } from "react-native";
 import { COLORS } from "../theme/colors";
 import { useTranslation } from "react-i18next";
+import styless from "./styles";
+import Icon from "react-native-vector-icons/Ionicons";
 
 // Default global chat rooms
 const chatRooms = [
   {
     id: "1",
     name: "Forum des jeunes du monde",
-    avatar: "https://i.pravatar.cc/60?img=5",
+    avatar: "https://i.ibb.co/TMQ0K6W2/ic-launcher-foreground.png",
     isJoined: true,
     lastMessage: "Bienvenue au forum des jeunes ✨",
     unreadCount: 3,
@@ -25,7 +27,7 @@ const chatRooms = [
   {
     id: "2",
     name: "Collège des dignitaires à travers le monde",
-    avatar: "https://i.pravatar.cc/60?img=8",
+    avatar: "https://i.ibb.co/TMQ0K6W2/ic-launcher-foreground.png",
     isJoined: false,
     lastMessage: "Cliquez pour demander l'accès.",
     unreadCount: 0,
@@ -33,7 +35,7 @@ const chatRooms = [
   {
     id: "3",
     name: "Forum publique ECC monde",
-    avatar: "https://i.pravatar.cc/60?img=15",
+    avatar: "https://i.ibb.co/TMQ0K6W2/ic-launcher-foreground.png",
     isJoined: true,
     lastMessage: "Dernier message public ECC.",
     unreadCount: 0,
@@ -45,7 +47,7 @@ const suggestedRooms = [
   {
     id: "4",
     name: "Forum des jeunes - Bénin",
-    avatar: "https://i.pravatar.cc/60?img=22",
+    avatar: "https://i.ibb.co/TMQ0K6W2/ic-launcher-foreground.png",
     isJoined: false,
     lastMessage: "Cliquez pour demander l'accès.",
     unreadCount: 0,
@@ -53,7 +55,7 @@ const suggestedRooms = [
   {
     id: "5",
     name: "Forum des jeunes - Nigeria",
-    avatar: "https://i.pravatar.cc/60?img=30",
+    avatar: "https://i.ibb.co/TMQ0K6W2/ic-launcher-foreground.png",
     isJoined: false,
     lastMessage: "Cliquez pour demander l'accès.",
     unreadCount: 0,
@@ -67,7 +69,6 @@ export default function Messages({ navigation }: any) {
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   // Handle pressing a chat room
-  
 
   const handleOpenChat = (room: any) => {
     if (room.isJoined) {
@@ -98,7 +99,7 @@ export default function Messages({ navigation }: any) {
       {/* Chat Info */}
       <View style={styles.chatInfo}>
         <Text style={styles.chatName}>{item.name}</Text>
-        <Text 
+        <Text
           style={[
             styles.lastMessage,
             item.unreadCount > 0 && { fontWeight: "bold", color: "#000" },
@@ -125,6 +126,30 @@ export default function Messages({ navigation }: any) {
 
   return (
     <View style={[styles.container, , { flex: 1, backgroundColor: "#fff" }]}>
+      <View style={styless.header1}>
+        <Image
+          source={require("../../assets/images/appLogo.png")}
+          style={styless.logo}
+        />
+        {/* <Text style={styles.titleSimple2}>{t("home.explore")}</Text> */}
+
+        <View style={styless.headerIcons}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Notifications")}
+          >
+            <Icon
+              name="notifications-outline"
+              size={24}
+              color="#444"
+              style={styless.iconRight}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
+            <Icon name="settings-outline" size={24} color="#444" />
+          </TouchableOpacity>
+        </View>
+      </View>
       <Text style={styles.title}>{t("messages.title")}</Text>
 
       {/* ✅ Default Rooms */}
@@ -154,10 +179,16 @@ export default function Messages({ navigation }: any) {
             </Text>
 
             <View style={styles.modalButtons}>
-              <TouchableOpacity style={styles.cancelBtn} onPress={() => setShowModal(false)}>
+              <TouchableOpacity
+                style={styles.cancelBtn}
+                onPress={() => setShowModal(false)}
+              >
                 <Text style={styles.cancelText}>{t("common.cancel")}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.applyBtn} onPress={handleApplyToJoin}>
+              <TouchableOpacity
+                style={styles.applyBtn}
+                onPress={handleApplyToJoin}
+              >
                 <Text style={styles.applyText}>{t("common.apply")}</Text>
               </TouchableOpacity>
             </View>
@@ -173,7 +204,10 @@ export default function Messages({ navigation }: any) {
             <Text style={styles.modalText}>
               {t("messages.confirmText", { name: selectedRoom?.name })}
             </Text>
-            <TouchableOpacity style={[styles.applyBtn, { marginTop: 10 }]} onPress={() => setShowConfirmation(false)}>
+            <TouchableOpacity
+              style={[styles.applyBtn, { marginTop: 10 }]}
+              onPress={() => setShowConfirmation(false)}
+            >
               <Text style={styles.applyText}>{t("common.ok")}</Text>
             </TouchableOpacity>
           </View>
@@ -184,22 +218,22 @@ export default function Messages({ navigation }: any) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, 
-    backgroundColor: "#fff",
-    justifyContent: "flex-start",
-     padding: 10
-     },
+  container: { flex: 1, backgroundColor: "#fff", justifyContent: "flex-start" },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     // marginVertical: 16,
-    marginBlockStart: 30,
+    paddingStart: 20,
     color: COLORS.light.primary,
+    backgroundColor: COLORS.white,
+    padding: 10,
+    elevation: 1,
   },
   subTitle: {
     fontSize: 18,
     fontWeight: "600",
     // marginTop: 20,
+    paddingStart: 20,
     marginBottom: 10,
     color: "#333",
   },
@@ -293,7 +327,7 @@ const styles = StyleSheet.create({
   },
   cancelBtn: {
     marginRight: 15,
-    justifyContent: "center"
+    justifyContent: "center",
   },
   cancelText: {
     fontSize: 15,

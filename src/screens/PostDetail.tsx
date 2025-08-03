@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import ImmersiveMode from 'react-native-immersive-mode';
-import { useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import ImmersiveMode from "react-native-immersive-mode";
 import {
   View,
   Text,
@@ -8,12 +7,12 @@ import {
   TouchableOpacity,
   Dimensions,
   StyleSheet,
-  StatusBar,
   FlatList,
   TextInput,
-  ScrollView,
+  Animated,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import Video from "react-native-video";
 
 const { width, height } = Dimensions.get("window");
 
@@ -28,40 +27,60 @@ const commentsData = [
         user: { name: "Alice", avatar: "https://i.pravatar.cc/41" },
         text: "This is a reply.",
       },
-      {
-        id: "1-2",
-        user: { name: "Mark", avatar: "https://i.pravatar.cc/42" },
-        text: "Another reply to John.",
-      },
     ],
-  },
-  {
-    id: "2",
-    user: { name: "Emma Watson", avatar: "https://i.pravatar.cc/43" },
-    text: "This is another top-level comment with no replies.",
-    replies: [],
   },
 ];
 
 const PostDetail = ({ route, navigation }: any) => {
- 
   useEffect(() => {
-    ImmersiveMode.fullLayout(true);            // Use full screen layout (content underneath bars)
-    ImmersiveMode.setBarMode('FullSticky');    // Hide both status & navigation bars (sticky)
-    ImmersiveMode.setBarStyle('Light');        // Icons in light style for dark backgrounds
-  
+    ImmersiveMode.fullLayout(true);
+    ImmersiveMode.setBarMode("FullSticky");
+    ImmersiveMode.setBarStyle("Light");
+
     return () => {
       ImmersiveMode.fullLayout(false);
-      ImmersiveMode.setBarMode('Normal');
+      ImmersiveMode.setBarMode("Normal");
     };
   }, []);
+
   const { post } = route.params;
+
   const [showCaption, setShowCaption] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const [uiVisible, setUiVisible] = useState(true);
+  // const [scale] = useState(new Animated.Value(1));
+  // // For zoom effect
+  const [scale] = useState(new Animated.Value(1));
+  
+  
+const [isZoomed, setIsZoomed] = useState(false);
+const [isVideoFullscreen, setIsVideoFullscreen] = useState(false);
+const [isUIVisible, setIsUIVisible] = useState(true);
+
+  const toggleUI = () => {
+    setUiVisible(!uiVisible);
+  };
+
+  const handleLongPress = () => {
+    const newZoom = !isZoomed;
+    setIsZoomed(newZoom);
+    setIsUIVisible(!newZoom); // hide UI when zoomed in
+    Animated.spring(scale, {
+      toValue: newZoom ? 2 : 1,
+      useNativeDriver: true,
+    }).start();
+  };
+  
 
   const openComments = () => {
     setShowCaption(false);
     setShowComments(true);
+  };
+
+  const toggleVideoFullscreen = () => {
+    const newState = !isVideoFullscreen;
+    setIsVideoFullscreen(newState);
+    setIsUIVisible(!newState); // hide UI when video fullscreen
   };
 
   const renderCommentItem = ({ item }: any) => (
@@ -70,106 +89,115 @@ const PostDetail = ({ route, navigation }: any) => {
       <View style={styles.commentContent}>
         <Text style={styles.commentName}>{item.user.name}</Text>
         <Text style={styles.commentText}>{item.text}</Text>
-        <View style={styles.replyRow}>
-          <Text style={styles.replyBtn}>Like</Text>
-          <Text style={styles.replyBtn}>Reply</Text>
-        </View>
-
-        {/* ✅ Render replies */}
-        {item.replies.length > 0 &&
-          item.replies.map((reply: any) => (
-            <View key={reply.id} style={styles.replyItem}>
-              <Image
-                source={{ uri: reply.user.avatar }}
-                style={styles.replyAvatar}
-              />
-              <View style={styles.replyContent}>
-                <Text style={styles.commentName}>{reply.user.name}</Text>
-                <Text style={styles.commentText}>{reply.text}</Text>
-                <View style={styles.replyRow}>
-                  <Text style={styles.replyBtn}>Like</Text>
-                  <Text style={styles.replyBtn}>Reply</Text>
-                </View>
-              </View>
+        {item.replies.map((reply: any) => (
+          <View key={reply.id} style={styles.replyItem}>
+            <Image
+              source={{ uri: reply.user.avatar }}
+              style={styles.replyAvatar}
+            />
+            <View style={styles.replyContent}>
+              <Text style={styles.commentName}>{reply.user.name}</Text>
+              <Text style={styles.commentText}>{reply.text}</Text>
             </View>
-          ))}
+          </View>
+        ))}
       </View>
     </View>
   );
 
   return (
     <View style={styles.container}>
-      {/* ✅ Back Button */}
+      {/* ✅ Media Section (Tap & Zoom) */}
       <TouchableOpacity
-        style={styles.backBtn}
-        onPress={() => navigation.goBack()}
+        style={styles.imageWrapper}
+        activeOpacity={1}
+        onPress={toggleUI}
+        onLongPress={handleLongPress}
+        delayLongPress={200}
       >
-        <Icon name="arrow-back" size={26} color="#fff" />
-      </TouchableOpacity>
-
-      {/* ✅ Image centered */}
-      <View style={styles.imageWrapper}>
-        <Image
-          source={post.images[0]}
-          style={styles.postImage}
-          resizeMode="contain"
-        />
-      </View>
-
-      {/* ✅ Floating reaction buttons */}
-      <View style={styles.reactionBar}>
-        <TouchableOpacity style={styles.reactionBtn}>
-          <Icon name="eye-outline" size={28} color="#fff" />
-          <Text style={styles.reactionText}>508k</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.reactionBtn}>
-          <Icon name="heart-outline" size={28} color="#fff" />
-          <Text style={styles.reactionText}>368k</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.reactionBtn} onPress={openComments}>
-          <Icon name="chatbubble-outline" size={28} color="#fff" />
-          <Text style={styles.reactionText}>5k</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.reactionBtn}>
-          <Icon name="share-social-outline" size={28} color="#fff" />
-          <Text style={styles.reactionText}>5k</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* ✅ Caption Overlay */}
-      <View style={styles.captionOverlay}>
-        <View style={styles.userRow}>
-          <Image source={post.user.profileImage} style={styles.avatar} />
-          <Text style={styles.username}>{post.user.name}</Text>
-        </View>
-        <View style={styles.userRow}>
-          <Text numberOfLines={2} style={styles.captionText}>
-            {post.text}
-          </Text>
-          <TouchableOpacity onPress={() => setShowCaption(true)}>
-            <Icon name="ellipsis-horizontal" size={20} color="#fff" />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* ✅ Comment Bar */}
-      <TouchableOpacity onPress={openComments}>
-        <View style={styles.commentBar}>
-          <Text style={styles.commentInput1}>Add a comment...</Text>
-          <Icon
-            name="happy-outline"
-            size={22}
-            color="#ccc"
-            style={{ marginHorizontal: 6 }}
+        {post.video ? (
+          <Video
+            source={post.video}
+            style={styles.postImage}
+            controls={true}
+            resizeMode="contain"
           />
-          <Icon name="send" size={22} color="#ccc" />
-        </View>
+        ) : (
+          <Animated.Image
+            source={post.images[0]}
+            style={[styles.postImage, { transform: [{ scale }] }]}
+            resizeMode="contain"
+          />
+        )}
       </TouchableOpacity>
 
-      {/* ✅ Bottom Drawer - Comments (fills 70% height) */}
+      {/* ✅ UI Elements (hide/show on tap) */}
+      {uiVisible && (
+        <>
+          {/* Back Button */}
+          <TouchableOpacity
+            style={styles.backBtn}
+            onPress={() => navigation.goBack()}
+          >
+            <Icon name="arrow-back" size={26} color="#fff" />
+          </TouchableOpacity>
+
+          {/* Reaction Bar */}
+          <View style={styles.reactionBar}>
+            <TouchableOpacity style={styles.reactionBtn}>
+              <Icon name="eye-outline" size={28} color="#fff" />
+              <Text style={styles.reactionText}>508k</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.reactionBtn}>
+              <Icon name="heart-outline" size={28} color="#fff" />
+              <Text style={styles.reactionText}>368k</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.reactionBtn} onPress={openComments}>
+              <Icon name="chatbubble-outline" size={28} color="#fff" />
+              <Text style={styles.reactionText}>5k</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.reactionBtn}>
+              <Icon name="share-social-outline" size={28} color="#fff" />
+              <Text style={styles.reactionText}>5k</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Caption Overlay */}
+          <View style={styles.captionOverlay}>
+            <View style={styles.userRow}>
+              <Image source={post.user.profileImage} style={styles.avatar} />
+              <Text style={styles.username}>{post.user.name}</Text>
+            </View>
+            <View style={styles.userRow}>
+              <Text numberOfLines={2} style={styles.captionText}>
+                {post.text}
+              </Text>
+              <TouchableOpacity onPress={() => setShowCaption(true)}>
+                <Icon name="ellipsis-horizontal" size={20} color="#fff" />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Comment Bar */}
+          <TouchableOpacity onPress={openComments}>
+            <View style={styles.commentBar}>
+              <Text style={styles.commentInput1}>Add a comment...</Text>
+              <Icon
+                name="happy-outline"
+                size={22}
+                color="#ccc"
+                style={{ marginHorizontal: 6 }}
+              />
+              <Icon name="send" size={22} color="#ccc" />
+            </View>
+          </TouchableOpacity>
+        </>
+      )}
+
+      {/* ✅ Comments Drawer */}
       {showComments && (
         <View style={styles.drawerOverlay}>
           <View style={styles.commentDrawer}>
@@ -207,7 +235,7 @@ const PostDetail = ({ route, navigation }: any) => {
         </View>
       )}
 
-      {/* ✅ Dark Overlay Drawer for full caption */}
+      {/* ✅ Full Caption Drawer */}
       {showCaption && (
         <View style={styles.drawerOverlay}>
           <View style={styles.drawerContent}>
@@ -227,10 +255,9 @@ const PostDetail = ({ route, navigation }: any) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#000",
-  },
+  container: { flex: 1, backgroundColor: "#000" },
+  imageWrapper: { flex: 1, justifyContent: "center", alignItems: "center" },
+  postImage: { width: width, height: height * 0.65 },
   backBtn: {
     position: "absolute",
     top: 40,
@@ -239,15 +266,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.5)",
     padding: 6,
     borderRadius: 20,
-  },
-  imageWrapper: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  postImage: {
-    width: width,
-    height: height * 0.65,
   },
   reactionBar: {
     position: "absolute",
@@ -258,15 +276,8 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 20,
   },
-  reactionBtn: {
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  reactionText: {
-    color: "#fff",
-    fontSize: 12,
-    marginTop: 3,
-  },
+  reactionBtn: { alignItems: "center", marginBottom: 20 },
+  reactionText: { color: "#fff", fontSize: 12, marginTop: 3 },
   captionOverlay: {
     position: "absolute",
     bottom: 55,
@@ -277,27 +288,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 8,
   },
-  userRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-  },
-  avatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    marginRight: 8,
-  },
-  username: {
-    color: "#fff",
-    fontWeight: "bold",
-    marginRight: 8,
-  },
-  captionText: {
-    flex: 1,
-    color: "#fff",
-    marginLeft: 8,
-  },
+  userRow: { flexDirection: "row", alignItems: "center", flex: 1 },
+  avatar: { width: 32, height: 32, borderRadius: 16, marginRight: 8 },
+  username: { color: "#fff", fontWeight: "bold", marginRight: 8 },
+  captionText: { flex: 1, color: "#fff", marginLeft: 8 },
   commentBar: {
     position: "absolute",
     bottom: 0,
@@ -314,17 +308,12 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 14,
     height: 40,
-    justifyContent: "center",
     borderColor: "#fff",
     borderRadius: 10,
     borderWidth: 1,
+    paddingHorizontal: 5,
   },
-  commentInput1: {
-    flex: 1,
-    color: "#fff",
-    fontSize: 14,
-    height: 40,
-  },
+  commentInput1: { flex: 1, color: "#fff", fontSize: 14, height: 40 },
   drawerOverlay: {
     position: "absolute",
     top: 0,
@@ -341,15 +330,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 16,
     height: height * 0.6,
   },
-  drawerHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 10,
-  },
-  commentItem: {
-    flexDirection: "row",
-    marginVertical: 8,
-  },
+  drawerHeader: { flexDirection: "row", justifyContent: "space-between" },
+  commentItem: { flexDirection: "row", marginVertical: 8 },
   commentAvatar: {
     width: 35,
     height: 35,
@@ -359,8 +341,6 @@ const styles = StyleSheet.create({
   commentContent: { flex: 1 },
   commentName: { color: "#fff", fontWeight: "bold", fontSize: 13 },
   commentText: { color: "#ddd", fontSize: 13, marginVertical: 2 },
-  replyRow: { flexDirection: "row", gap: 12 },
-  replyBtn: { color: "#3b82f6", fontSize: 12 },
   replyItem: { flexDirection: "row", marginTop: 6, marginLeft: 40 },
   replyAvatar: { width: 28, height: 28, borderRadius: 14, marginRight: 6 },
   replyContent: { flex: 1 },
@@ -371,11 +351,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     maxHeight: height * 0.6,
   },
-  fullCaption: {
-    color: "#fff",
-    fontSize: 16,
-    lineHeight: 22,
-  },
+  fullCaption: { color: "#fff", fontSize: 16, lineHeight: 22 },
 });
 
 export default PostDetail;

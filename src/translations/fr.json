@@ -7,9 +7,34 @@
   "benefit2": "Soumettez des propositions de reformes pour les dignitaires de l'église",
   "benefit3": "Rejoignez le salon de discussion mondial avec des modérateurs",
   "login": "Connexion",
-  "signup": "S'inscrire",
+  "signup": "Inscription",
+  "email": "Adresse e-mail",
+  "password": "Mot de passe",
+  "emailPlaceholder": "Entrez votre e-mail",
+  "passwordPlaceholder": "Entrez votre mot de passe",
+  "noAccountSignUp": "Vous n'avez pas de compte ? Inscrivez-vous",
+  "haveAccountLogin": "Vous avez déjà un compte ? Connectez-vous",
+  "firstname": "Prénom",
+  "lastname": "Nom",
+  "parishName": "Nom de la paroisse",
+  "phone": "Numéro de téléphone",
+  "confirmPassword": "Confirmer le mot de passe",
+  "signupTitle": "Créer un compte",
+  "next": "Suivant",
+  "back": "Retour",
+  "selectCountry": "Sélectionnez votre pays",
   "guest": "Continuer en tant qu'invité",
-  "noAccountSignUp": "Don't have an account? Regiter here.",
+  "onboard": {
+    "skip": "Passer",
+    "next": "Suivant",
+    "start": "Commencer",
+    "title1": "Bienvenue dans l'application Céleste",
+    "text1": "Unir les Célestes du monde entier et renforcer la foi avec les lois d'origine et les mises à jour.",
+    "title2": "Préserver notre fondation",
+    "text2": "Cette application soutient la Commission Supérieur de Transition dans la restauration de la vision d’Oshoffa.",
+    "title3": "Restez connecté",
+    "text3": "Recevez les actualités, cantiques, documents de l’église, et rejoignez le chat mondial céleste."
+  },
   "home": {
     "explore": "Explorer",
     "searchPlaceholder": "Rechercher ici",
@@ -65,7 +90,14 @@
   "documents": {
     "title": "Documents de l'ECC"
   },
-
+  "cantiques": {
+    "title": "Cantiques de l'ECC",
+    "en_fr": "Cantique en Français",
+    "en_yo": "Cantique en Yoruba",
+    "en_gou": "Cantique en Goun",
+    "en_fon": "Cantique en Fon",
+    "en_es": "Cantique en Espagnol"
+  },
   "doc_10_commandments": "10 Commandements",
   "doc_church_history": "Histoire de l'Église",
   "doc_osh_offa": "PPF SBJ OSHOFFA",
@@ -77,6 +109,7 @@
   "doc_institutions": "Institutions ECC",
   "messages": {
     "title": "Forums ECC",
+    "audiMessage": "Message Vocal",
     "suggestedRooms": "Salons suggérés pour vous",
     "apply": "Demander",
     "requestTitle": "Demande d'adhésion",

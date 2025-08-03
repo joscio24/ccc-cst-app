@@ -2,46 +2,53 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   FlatList,
   TextInput,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
   Image,
   SafeAreaView,
   StatusBar,
-  PanResponder,
+  KeyboardAvoidingView,
+  Platform,
   ImageBackground,
+  Animated,
+  PanResponder,
+  StyleSheet,
+  Modal,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { COLORS } from "../theme/colors";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
 import { useFocusEffect } from "@react-navigation/native";
+import * as FileSystem from "expo-file-system";
+import * as Sharing from "expo-sharing";
+import * as DocumentPicker from "expo-document-picker";
+import styles from "./chatStyle";
+import * as ImagePicker from "expo-image-picker";
+import { COLORS } from "../theme/colors";
 
 interface Message {
   id: string;
   text?: string;
-  image?: string;
+  image?: string[];
   caption?: string;
   sender: "me" | "other";
   username: string;
   avatar: string;
   timestamp: string;
   replyTo?: string;
+  isSending?: boolean;
+  uploadProgress?: number; // Add upload progress field
+  type?: "text" | "image" | "doc" | "audio" | "video";
+  animatedValue?: Animated.Value;
+  docName?: string; // document file name
+  docUri?: string; // local uri for document
+  videoUri?: string; // local uri for document
+  imageUri?: string; // local uri for document
+  audioUri?: string; // local uri for document
 }
 
 export default function ChatRoom({ route, navigation }: any) {
   const { t } = useTranslation();
-
-  useFocusEffect(
-    React.useCallback(() => {
-      return () => {
-        // Cleanup if needed
-      };
-    }, [])
-  );
-
   const { chatName, chatAvatar } = route.params;
 
   const [messages, setMessages] = useState<Message[]>([
@@ -52,6 +59,7 @@ export default function ChatRoom({ route, navigation }: any) {
       username: "John Doe",
       avatar: "https://i.pravatar.cc/150?img=1",
       timestamp: "09:30",
+      animatedValue: new Animated.Value(0),
     },
     {
       id: "2",
@@ -60,15 +68,29 @@ export default function ChatRoom({ route, navigation }: any) {
       username: "Me",
       avatar: "https://i.pravatar.cc/150?img=2",
       timestamp: "09:32",
+      animatedValue: new Animated.Value(0),
     },
     {
       id: "3",
-      image: "https://i.pravatar.cc/300",
-      caption: "Check this image out!",
+      image: ["https://i.pravatar.cc/300"],
+      caption: "Check these images!",
       sender: "other",
       username: "John Doe",
       avatar: "https://i.pravatar.cc/150?img=1",
       timestamp: "09:35",
+      type: "image",
+      animatedValue: new Animated.Value(0),
+    },
+    {
+      id: "4",
+      image: ["https://i.pravatar.cc/300"],
+      caption: "Check these images!",
+      sender: "me",
+      username: "John Doe",
+      avatar: "https://i.pravatar.cc/150?img=1",
+      timestamp: "09:35",
+      type: "image",
+      animatedValue: new Animated.Value(0),
     },
   ]);
 
@@ -76,319 +98,612 @@ export default function ChatRoom({ route, navigation }: any) {
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const flatListRef = useRef<FlatList>(null);
 
-  // Auto scroll to bottom on new messages
+  const [downloadProgress, setDownloadProgress] = useState<number>(0);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const downloadController = useRef<FileSystem.DownloadResumable | null>(null);
+
+  const [showAttachmentSheet, setShowAttachmentSheet] = useState(false);
+
+  useFocusEffect(React.useCallback(() => () => {}, []));
+
   useEffect(() => {
-    setTimeout(() => {
-      flatListRef.current?.scrollToEnd({ animated: true });
-    }, 200);
+    setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 200);
   }, [messages]);
 
   const sendMessage = () => {
-    if (inputText.trim() === "") return;
+    if (!inputText.trim()) return;
+    const id = Date.now().toString();
     const newMsg: Message = {
-      id: Date.now().toString(),
+      id,
       text: inputText,
       sender: "me",
       username: "Me",
       avatar: "https://i.pravatar.cc/150?img=2",
       timestamp: new Date().toLocaleTimeString().slice(0, 5),
       replyTo: replyingTo || undefined,
+      isSending: true,
+      type: "text",
+      animatedValue: new Animated.Value(0),
     };
     setMessages((prev) => [...prev, newMsg]);
     setInputText("");
     setReplyingTo(null);
+
+    setTimeout(() => {
+      setMessages((prev) =>
+        prev.map((msg) => (msg.id === id ? { ...msg, isSending: false } : msg))
+      );
+    }, 2000);
   };
 
-  // Slide-to-reply gesture
-  const createPanResponder = (msgId: string) =>
+  // Document picker and upload simulation
+  const selectDocument = async () => {
+    setShowAttachmentSheet(false);
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: "*/*",
+      });
+
+      if (result.canceled) return;
+
+      const id = Date.now().toString();
+      const newMsg: Message = {
+        id,
+        sender: "me",
+        username: "Me",
+        avatar: "https://i.pravatar.cc/150?img=2",
+        timestamp: new Date().toLocaleTimeString().slice(0, 5),
+        isSending: true,
+        type: "doc",
+        docName: result.output?.item.name,
+        docUri: result.assets?.with.name,
+        uploadProgress: 0,
+        animatedValue: new Animated.Value(0),
+      };
+
+      setMessages((prev) => [...prev, newMsg]);
+
+      // Simulate upload progress
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 0.1;
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === id
+              ? { ...msg, uploadProgress: Math.min(progress, 1) }
+              : msg
+          )
+        );
+        if (progress >= 1) {
+          clearInterval(interval);
+          setMessages((prev) =>
+            prev.map((msg) =>
+              msg.id === id ? { ...msg, isSending: false } : msg
+            )
+          );
+        }
+      }, 300);
+    } catch (e) {
+      console.log("Document picker error:", e);
+    }
+  };
+
+  const createPanResponder = (msg: Message) =>
     PanResponder.create({
       onMoveShouldSetPanResponder: (_, gestureState) => gestureState.dx > 25,
+      onPanResponderMove: (_, gestureState) => {
+        if (gestureState.dx > 0) {
+          msg.animatedValue?.setValue(gestureState.dx);
+        }
+      },
       onPanResponderRelease: () => {
-        setReplyingTo(msgId);
+        setReplyingTo(msg.id);
+        Animated.timing(msg.animatedValue!, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }).start();
       },
     });
+  const [downloadedImages, setDownloadedImages] = useState<{
+    [key: string]: string;
+  }>({});
 
-  const renderMessage = ({ item }: { item: Message }) => {
-    const panResponder = createPanResponder(item.id);
+  const startDownload = async (url: string, msgId: string) => {
+    try {
+      setDownloadingId(msgId);
+      setDownloadProgress(0);
+
+      const callback = (downloadProgress: FileSystem.DownloadProgressData) => {
+        const progress =
+          downloadProgress.totalBytesWritten /
+          downloadProgress.totalBytesExpectedToWrite;
+        setDownloadProgress(progress);
+      };
+
+      const fileUri =
+        FileSystem.documentDirectory +
+        (url.split("/").pop() || `file_${msgId}.jpg`);
+
+      const downloadResumable = FileSystem.createDownloadResumable(
+        url,
+        fileUri,
+        {},
+        callback
+      );
+      downloadController.current = downloadResumable;
+
+      const result = await downloadResumable.downloadAsync();
+      setDownloadingId(null);
+
+      if (result && result.uri) {
+        setDownloadedImages((prev) => ({ ...prev, [msgId]: result.uri }));
+      }
+    } catch (e) {
+      console.log("Download cancelled or failed:", e);
+      setDownloadingId(null);
+    }
+  };
+
+  const cancelDownload = () => {
+    if (downloadController.current) {
+      downloadController.current.pauseAsync();
+      setDownloadingId(null);
+      setDownloadProgress(0);
+    }
+  };
+
+  const renderImageGrid = (item: Message) => {
+    const images = item.image || [];
+    const msgId = item.id;
+    const displayedImages = images.slice(0, 4);
+    const isDownloaded = downloadedImages[msgId];
     const isMe = item.sender === "me";
 
     return (
-      <View style={[styles.messageRow, isMe ? styles.rowRight : styles.rowLeft]}>
-        {/* Avatar */}
-        {!isMe && (
-          <TouchableOpacity
-            onPress={() => navigation.navigate("UserProfile", { userId: item.id })}
-          >
-            <Image source={{ uri: item.avatar }} style={styles.userAvatar} />
-          </TouchableOpacity>
-        )}
+      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 2 }}>
+        {displayedImages.map((img, index) => {
+          const imageSource = isDownloaded
+            ? { uri: isDownloaded }
+            : { uri: img };
 
-        {/* Message Bubble */}
-        <View
-          {...panResponder.panHandlers}
-          style={[
-            styles.messageContainer,
-            isMe ? styles.myMessage : styles.otherMessage,
-          ]}
-        >
-          {!isMe && <Text style={styles.username}>{item.username}</Text>}
-
-          {item.replyTo && (
-            <View style={styles.replyBox}>
-              <Text style={styles.replyLabel}>Replying to: </Text>
-              <Text style={styles.replyText}>
-                {messages.find((m) => m.id === item.replyTo)?.text || "Image message"}
-              </Text>
-            </View>
-          )}
-
-          {item.image && (
-            <Image source={{ uri: item.image }} style={styles.imageMessage} />
-          )}
-          {item.caption && <Text style={styles.messageText}>{item.caption}</Text>}
-          {item.text && <Text style={styles.messageText}>{item.text}</Text>}
-
-          <View style={styles.timeRow}>
-            <Text style={styles.timeText}>{item.timestamp}</Text>
-            {isMe && (
-              <Ionicons
-                name="checkmark-done"
-                size={16}
-                color={COLORS.light.primary}
-                style={{ marginLeft: 6 }}
+          return (
+            <TouchableOpacity
+              key={index}
+              style={{
+                width: images.length === 1 ? 200 : 100,
+                height: images.length === 1 ? 200 : 100,
+                margin: 1,
+              }}
+              onPress={() => {
+                if (!isDownloaded) {
+                  startDownload(img, msgId);
+                } else {
+                  console.log("Viewing downloaded image:", isDownloaded);
+                }
+              }}
+            >
+              <Image
+                source={imageSource}
+                style={{ width: "100%", height: "100%", borderRadius: 6 }}
+                blurRadius={
+                  !isDownloaded && downloadingId !== msgId && !isMe ? 100 : 0
+                }
               />
-            )}
-          </View>
-          
-        </View>
 
-        {/* {isMe && (
-          <TouchableOpacity>
-            <Image source={{ uri: item.avatar }} style={styles.userAvatar} />
-          </TouchableOpacity>
-        )} */}
+              {index === 3 && images.length > 4 && (
+                <View
+                  style={{
+                    ...StyleSheet.absoluteFillObject,
+                    backgroundColor: "rgba(0,0,0,0.5)",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: 6,
+                  }}
+                >
+                  <Text style={{ color: "#fff", fontSize: 18 }}>
+                    +{images.length - 4}
+                  </Text>
+                </View>
+              )}
+
+              {!isDownloaded && (
+                <>
+                  {!isMe && (
+                    <>
+                      {downloadingId === msgId ? (
+                        <View
+                          style={{
+                            ...StyleSheet.absoluteFillObject,
+                            backgroundColor: "rgba(0,0,0,0.4)",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <TouchableOpacity onPress={cancelDownload}>
+                            <Ionicons
+                              name="close-circle-outline"
+                              size={36}
+                              color={COLORS.white}
+                            />
+                          </TouchableOpacity>
+                          <Text style={{ color: "#fff" }}>
+                            {Math.floor(downloadProgress * 100)}%
+                          </Text>
+                        </View>
+                      ) : (
+                        <Ionicons
+                          name="download"
+                          size={24}
+                          color="#fff"
+                          style={{ position: "absolute", bottom: 8, right: 8 }}
+                        />
+                      )}
+                    </>
+                  )}
+                </>
+              )}
+            </TouchableOpacity>
+          );
+        })}
       </View>
     );
   };
+
+  const simulateUpload = (id: string) => {
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 0.1;
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === id
+            ? { ...msg, uploadProgress: Math.min(progress, 1) }
+            : msg
+        )
+      );
+      if (progress >= 1) {
+        clearInterval(interval);
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === id ? { ...msg, isSending: false } : msg
+          )
+        );
+      }
+    }, 300);
+  };
+
+  const selectImage = async () => {
+    setShowAttachmentSheet(false);
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsMultipleSelection: true,
+        quality: 1,
+      });
+      if (result.canceled) return;
+
+      const images = result.assets.map((asset) => asset.uri);
+      const id = Date.now().toString();
+      const newMsg: Message = {
+        id,
+        sender: "me",
+        username: "Me",
+        avatar: "https://i.pravatar.cc/150?img=2",
+        timestamp: new Date().toLocaleTimeString().slice(0, 5),
+        isSending: true,
+        type: "image",
+        image: images,
+        uploadProgress: 0,
+        animatedValue: new Animated.Value(0),
+      };
+
+      setMessages((prev) => [...prev, newMsg]);
+      simulateUpload(id);
+    } catch (e) {
+      console.log("Image picker error:", e);
+    }
+  };
+
+  // Video picker
+  const selectVideo = async () => {
+    setShowAttachmentSheet(false);
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+        allowsMultipleSelection: false,
+        quality: 1,
+      });
+      if (result.canceled) return;
+
+      const id = Date.now().toString();
+      const videoUri = result.assets[0].uri;
+      const newMsg: Message = {
+        id,
+        sender: "me",
+        username: "Me",
+        avatar: "https://i.pravatar.cc/150?img=2",
+        timestamp: new Date().toLocaleTimeString().slice(0, 5),
+        isSending: true,
+        type: "video",
+        videoUri,
+        uploadProgress: 0,
+        animatedValue: new Animated.Value(0),
+      };
+
+      setMessages((prev) => [...prev, newMsg]);
+      simulateUpload(id);
+    } catch (e) {
+      console.log("Video picker error:", e);
+    }
+  };
+
+  // Audio picker
+  const selectAudio = async () => {
+    setShowAttachmentSheet(false);
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: "audio/*",
+        multiple: false,
+      });
+      if (result.canceled) return;
+
+      const id = Date.now().toString();
+      const newMsg: Message = {
+        id,
+        sender: "me",
+        username: "Me",
+        avatar: "https://i.pravatar.cc/150?img=2",
+        timestamp: new Date().toLocaleTimeString().slice(0, 5),
+        isSending: true,
+        type: "audio",
+        docName: result.output?.item.name,
+        audioUri: result.assets?.with.name,
+        uploadProgress: 0,
+        animatedValue: new Animated.Value(0),
+      };
+
+      setMessages((prev) => [...prev, newMsg]);
+      simulateUpload(id);
+    } catch (e) {
+      console.log("Audio picker error:", e);
+    }
+  };
+  // Render document message with name and upload progress
+  const renderDocMessage = (item: Message) => {
+    const isMe = item.sender === "me";
+    return (
+      <View
+        style={[
+          styles.docMessageContainer,
+          isMe ? styles.myBubble : styles.otherBubble,
+        ]}
+      >
+        <Ionicons
+          name="document-text-outline"
+          size={32}
+          color={isMe ? "#0084ff" : "#555"}
+          style={{ marginRight: 8 }}
+        />
+        <View style={{ flexShrink: 1 }}>
+          <Text style={[styles.messageText, { fontWeight: "600" }]}>
+            {item.docName || "Document"}
+          </Text>
+          {item.isSending && (
+            <Text style={{ color: "#888", fontSize: 12, marginTop: 4 }}>
+              Uploading... {Math.floor((item.uploadProgress || 0) * 100)}%
+            </Text>
+          )}
+        </View>
+      </View>
+    );
+  };
+
+  const renderMessage = ({ item }: { item: Message }) => {
+    const isMe = item.sender === "me";
+    const panResponder = createPanResponder(item);
+
+    return (
+      <Animated.View
+        {...panResponder.panHandlers}
+        style={{
+          transform: [
+            { translateX: item.animatedValue || new Animated.Value(0) },
+          ],
+        }}
+      >
+        <View
+          style={[styles.messageRow, isMe ? styles.rowRight : styles.rowLeft]}
+        >
+          {!isMe && (
+            <Image source={{ uri: item.avatar }} style={styles.userAvatar} />
+          )}
+          {item.type === "doc" ? (
+            renderDocMessage(item)
+          ) : (
+            <View
+              style={[
+                styles.messageBubble,
+                isMe ? styles.myBubble : styles.otherBubble,
+              ]}
+            >
+              {!isMe && <Text style={styles.username}>{item.username}</Text>}
+
+              {item.replyTo && (
+                <View style={styles.replyBox}>
+                  <Text style={styles.replyLabel}>Replying to:</Text>
+                  <Text style={styles.replyText}>
+                    {messages.find((m) => m.id === item.replyTo)?.text ||
+                      "Image message"}
+                  </Text>
+                </View>
+              )}
+
+              {item.image && renderImageGrid(item)}
+
+              {item.caption && (
+                <Text style={styles.messageText}>{item.caption}</Text>
+              )}
+              {item.text && <Text style={styles.messageText}>{item.text}</Text>}
+
+              <View style={styles.footerRow}>
+                <Text style={styles.timestamp}>{item.timestamp}</Text>
+                {isMe &&
+                  (item.isSending ? (
+                    <Ionicons name="time-outline" size={14} color="#aaa" />
+                  ) : (
+                    <Ionicons name="checkmark-done" size={14} color="#aaa" />
+                  ))}
+              </View>
+            </View>
+          )}
+        </View>
+      </Animated.View>
+    );
+  };
+
+  const renderAttachmentSheet = () => (
+    <Modal visible={showAttachmentSheet} transparent animationType="slide">
+      <View style={styles.attachmentSheet}>
+        <View style={styles.attachmentGrid}>
+          <TouchableOpacity
+            onPress={selectDocument}
+            style={styles.attachmentCard}
+          >
+            <Ionicons
+              name="document-text-outline"
+              size={36}
+              color={COLORS.light.primary}
+            />
+            <Text style={styles.attachmentLabel}>Documents</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={selectImage} style={styles.attachmentCard}>
+            <Ionicons
+              name="image-outline"
+              size={36}
+              color={COLORS.light.primary}
+            />
+            <Text style={styles.attachmentLabel}>Images</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={selectVideo} style={styles.attachmentCard}>
+            <Ionicons
+              name="videocam-outline"
+              size={36}
+              color={COLORS.light.primary}
+            />
+            <Text style={styles.attachmentLabel}>Videos</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={selectAudio} style={styles.attachmentCard}>
+            <Ionicons
+              name="musical-notes-outline"
+              size={36}
+              color={COLORS.light.primary}
+            />
+            <Text style={styles.attachmentLabel}>Audio</Text>
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity
+          onPress={() => setShowAttachmentSheet(false)}
+          style={styles.attachmentCancelBtn}
+        >
+          <Text style={styles.attachmentCancelText}>Cancel</Text>
+        </TouchableOpacity>
+      </View>
+    </Modal>
+  );
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
 
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="#000" />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{ flexDirection: "row", alignItems: "center" }}
-          onPress={() =>
-            navigation.navigate("GroupInfo", {
-              chatName,
-              chatAvatar,
-            })
-          }
-        >
-          <Image source={{ uri: chatAvatar }} style={styles.avatar} />
-          <Text style={styles.headerTitle}>{chatName}</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Messages with PNG background */}
-      <ImageBackground
-        source={require("../../assets/images/chat_bg.png")}
-        style={[styles.chatBg, { flex: 1 }]}
-      >
-        <FlatList
-          ref={flatListRef}
-          data={messages}
-          renderItem={renderMessage}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.chatList}
-          showsVerticalScrollIndicator={false}
-        />
-      </ImageBackground>
-
-      {/* Replying preview */}
-      {replyingTo && (
-        <View style={styles.replyingBox}>
-          <Text style={{ color: "#333" }}>
-            Replying to:{" "}
-            {messages.find((m) => m.id === replyingTo)?.text || "Image message"}
-          </Text>
-          <TouchableOpacity onPress={() => setReplyingTo(null)}>
-            <Ionicons name="close" size={18} color="#555" />
-          </TouchableOpacity>
-        </View>
-      )}
-
-      {/* Input bar */}
       <KeyboardAvoidingView
+        style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 34} // Adjust if header overlaps
       >
-        <View style={styles.inputContainer}>
-          <TouchableOpacity>
-            <Ionicons
-              name="image-outline"
-              size={22}
-              color={COLORS.light.primary}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity style={{ marginHorizontal: 8 }}>
-            <Ionicons
-              name="mic-outline"
-              size={22}
-              color={COLORS.light.primary}
-            />
-          </TouchableOpacity>
+        <View style={{ flex: 1 }}>
+          {/* Header */}
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Ionicons name="arrow-back" size={24} color="#000" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.headerGroup}
+              onPress={() =>
+                navigation.navigate("GroupInfo", { chatName, chatAvatar })
+              }
+            >
+              <Image source={{ uri: chatAvatar }} style={styles.headerAvatar} />
+              <View>
+                <Text style={styles.headerTitle}>{chatName}</Text>
+                <Text style={{ fontSize: 12, color: "#666" }}>
+                  623k members
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Ionicons name="call-outline" size={22} color="#000" />
+            </TouchableOpacity>
+          </View>
 
-          <TextInput
-            placeholder={t("messages.typeMessage") || "Type a message..."}
-            placeholderTextColor="#aaa"
-            style={styles.input}
-            value={inputText}
-            onChangeText={setInputText}
-            multiline
-            numberOfLines={1}
-            maxLength={300}
-          />
-          <TouchableOpacity onPress={sendMessage}>
-            <Ionicons name="send" size={22} color={COLORS.light.primary} />
-          </TouchableOpacity>
+          {/* Chat Background */}
+          <View style={styles.chatBg}>
+            <Image
+              source={require("../../assets/images/chatBg.jpg")}
+              style={styles.chatTiledBg}
+              resizeMode="repeat" // works only on iOS
+            />
+            <FlatList
+              ref={flatListRef}
+              data={messages}
+              keyExtractor={(item) => item.id}
+              renderItem={renderMessage}
+              contentContainerStyle={styles.chatList}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+            />
+          </View>
+
+          {/* Replying */}
+          {replyingTo && (
+            <View style={styles.replyPreview}>
+              <Text style={styles.replyPreviewText}>
+                Replying:{" "}
+                {messages.find((m) => m.id === replyingTo)?.text || "Image"}
+              </Text>
+              <TouchableOpacity onPress={() => setReplyingTo(null)}>
+                <Ionicons name="close" size={20} color="#555" />
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {/* Input Area */}
+          <View style={styles.inputArea}>
+            <TouchableOpacity onPress={() => setShowAttachmentSheet(true)}>
+              <Ionicons name="document-attach-outline" size={24} color="#555" />
+            </TouchableOpacity>
+            <TouchableOpacity style={{ marginHorizontal: 8 }}>
+              <Ionicons name="mic-outline" size={24} color="#555" />
+            </TouchableOpacity>
+            <TextInput
+              style={styles.input}
+              placeholder={t("messages.typeMessage") || "Type a message..."}
+              placeholderTextColor="#aaa"
+              value={inputText}
+              onChangeText={setInputText}
+              multiline
+            />
+            <TouchableOpacity onPress={sendMessage}>
+              <Ionicons name="send" size={24} color="#2FA5A9" />
+            </TouchableOpacity>
+          </View>
         </View>
       </KeyboardAvoidingView>
+
+      {renderAttachmentSheet()}
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: "#f5f5f5" },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    backgroundColor: "#fff",
-    borderBottomWidth: 0.5,
-    borderColor: "#ddd",
-  },
-  chatBg: {
-    // backgroundColor: "#e6f0ff", // example light blue background, change as you like
-  },
-  avatar: {
-    width: 35,
-    height: 35,
-    borderRadius: 18,
-    marginHorizontal: 10,
-  },
-  headerTitle: {
-    color: "#000",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  chatList: {
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-  },
-  messageRow: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    marginVertical: 4,
-  },
-  rowLeft: { alignSelf: "flex-start" },
-  rowRight: { alignSelf: "flex-end", flexDirection: "row-reverse" },
-  userAvatar: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    marginHorizontal: 6,
-  },
-  username: {
-    fontSize: 11,
-    color: "#555",
-    fontWeight: "600",
-    marginBottom: 2,
-  },
-  messageContainer: {
-    maxWidth: "80%",
-    padding: 10,
-    borderRadius: 10,
-    marginVertical: 6,
-  },
-  myMessage: {
-    backgroundColor: "#d4f5f0",
-    borderBottomRightRadius: 2,
-  },
-  otherMessage: {
-    backgroundColor: "#e5e5e5",
-    borderBottomLeftRadius: 2,
-  },
-  messageText: {
-    color: "#000",
-    fontSize: 15,
-  },
-  timeRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-end",
-  },
-  timeText: {
-    fontSize: 11,
-    color: "#555",
-    marginTop: 4,
-  },
-  imageMessage: {
-    width: 200,
-    height: 150,
-    borderRadius: 8,
-    marginBottom: 5,
-  },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    backgroundColor: "#fff",
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderTopWidth: 0.5,
-    borderColor: "#ddd",
-  },
-  input: {
-    flex: 1,
-    backgroundColor: "#f0f0f0",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
-    marginRight: 8,
-    fontSize: 15,
-    maxHeight: 120,
-  },
-  replyingBox: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#e0f2f1",
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    borderLeftWidth: 3,
-    borderLeftColor: COLORS.light.primary,
-  },
-  replyBox: {
-    backgroundColor: "#c9e9e4",
-    padding: 4,
-    borderLeftWidth: 3,
-    borderLeftColor: COLORS.light.primary,
-    marginBottom: 4,
-    borderRadius: 4,
-  },
-  replyLabel: {
-    fontSize: 11,
-    color: "#555",
-    fontWeight: "bold",
-  },
-  replyText: {
-    fontSize: 12,
-    color: "#333",
-  },
-});
